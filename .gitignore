@@ -1,0 +1,4 @@
+/node_modules
+/server/Api_routes.txt
+package-lock.json
+jest.config.json

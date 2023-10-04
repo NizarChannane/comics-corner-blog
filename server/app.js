@@ -1,10 +1,10 @@
 import express from "express";
 
-const createApp = () => {
+const createApp = (db) => {
     const app = express();
 
     app.use(express.json());
-    
+
     return app;
 };
 

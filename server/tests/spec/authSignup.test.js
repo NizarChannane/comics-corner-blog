@@ -1,5 +1,5 @@
 import * as authController from "../../controllers/authController.js";
-import { jest } from "@jest/globals"
+import { jest, expect } from "@jest/globals";
 
 const mockReq = {
     body: {
@@ -13,8 +13,7 @@ const mockReq = {
 
 const mockRes = {
     status: jest.fn(),
-    send: jest.fn(),
-    sendStatus: jest.fn()
+    send: jest.fn()
 };
 
 const mockDb = {
@@ -23,10 +22,6 @@ const mockDb = {
 };
 
 const mockUtils = {
-    tokensTool: {
-        createToken: jest.fn(),
-        decodeToken: jest.fn()
-    },
     encryptionTool: {
         hashPwd: jest.fn()
     },
@@ -64,8 +59,8 @@ describe("signup function", () => {
         validatorResultObj.isEmpty.mockReturnValue(true);
     });
     
-    //  sends back 400 status if validation errors
-    describe("sends back 400 status if validation errors", () => {
+    //  check validation errors
+    describe("check validation errors", () => {
 
         beforeEach(() => {
             validatorResultObj.isEmpty.mockReturnValue(false);
@@ -80,8 +75,8 @@ describe("signup function", () => {
             expect(mockValidator.validationResult.mock.calls[0][0]).toBe(mockReq);
         });
 
-        //  sets response status to 400
-        test("sets response status to 400", async () => {
+        //  sets response status to 400 if errors
+        test("sets response status to 400 if errors", async () => {
 
             await authController.signup(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
@@ -120,6 +115,7 @@ describe("signup function", () => {
             
             await authController.signup(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
+            expect(mockDb.getUserByEmail).toHaveBeenCalledTimes(1);
             expect(mockDb.getUserByEmail.mock.calls[0][0]).toBe(mockReq.body.email);
         });
 
@@ -133,15 +129,16 @@ describe("signup function", () => {
             expect(mockRes.status).toHaveBeenCalledTimes(1);
             expect(mockRes.status.mock.calls[0][0]).toBe(400);
         });
-
+        
         //  sends back proper json response
         test("sends back proper json response", async () => {
             mockDb.getUserByEmail.mockReturnValue(1);
             mockRes.status.mockReturnThis();
-
+            
             await authController.signup(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
             
             expect(mockDb.getUserByEmail).toHaveBeenCalledTimes(1);
+            expect(mockRes.status).toHaveBeenCalledTimes(1);
             expect(mockRes.send).toHaveBeenCalledTimes(1);
             expect(mockRes.send.mock.calls[0][0]).toStrictEqual({ msg: "Un compre est déjà associé à cette adress mail." });
         });

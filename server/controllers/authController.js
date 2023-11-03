@@ -23,6 +23,31 @@ export const signup = (db, utils, validator) => async (req, res) => {
 
     await utils.mailingTool.sendVerificationEmail(userData.email);
 
-    return res.status(200).send({ userId: dbResult, msg: "Votre compte a bien été créé." });
+    res.status(200).send({ userId: dbResult, msg: "Votre compte a bien été créé." });
+    return;
+
+};
+
+export const signin = (db, utils, validator) => async (req, res) => {
+
+};
+
+export const verifyEmail = (db, utils, validator) => async (req, res) => {
+
+};
+
+export const authenticate = (db, utils, validator, role) => async (req, res, next) => {
+
+};
+
+export const sendResetEmail = (db, utils, validator) => async (req, res) => {
+
+};
+
+export const resetPwd = (db, utils, validator) => async (req, res) => {
+
+};
+
+export const deleteUser = (db, utils, validator) => async (req, res) => {
 
 };

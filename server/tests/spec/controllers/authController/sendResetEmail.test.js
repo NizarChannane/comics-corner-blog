@@ -1,4 +1,4 @@
-import * as authController from "../../controllers/authController.js";
+import * as authController from "../../../../controllers/authController.js";
 import { jest, expect } from "@jest/globals";
 
 const mockReq = {
@@ -48,6 +48,12 @@ const mockValidator = {
 
 //  sendResetEmail
 describe("sendResetEmail", () => {
+
+    beforeEach(() => {
+        mockRes.status.mockReturnThis();
+        mockValidator.validationResult.mockReturnValue(validatorResultObj);
+        validatorResultObj.isEmpty.mockReturnValue(true);
+    });
 
     //  check validation errors
     describe("check validation errors", () => {
@@ -100,7 +106,7 @@ describe("sendResetEmail", () => {
 
         //  passes email to db function
         test("passes email to db function", async () => {
-            mockDb.getUserByEmail.mockReturnValue({
+            mockDb.getUserByEmail.mockResolvedValue({
                 ...mockReq.body,
                 password: "$2y$10$9ituCqkY4GfEw.OecDHNZuhX1dvgVSjqZv99Hc3yBPtvzv2UE8x0."
             });
@@ -111,9 +117,9 @@ describe("sendResetEmail", () => {
             expect(mockDb.getUserByEmail.mock.calls[0][0]).toBe(mockReq.body.email);
         });
 
-        //  sets response status code to 400 if user doesn't exists
-        test("sets response status code to 400 if doesn't exists", async () => {
-            mockDb.getUserByEmail.mockReturnValue({});
+        //  sets response status code to 400 if user doesn't exist
+        test("sets response status code to 400 if doesn't exist", async () => {
+            mockDb.getUserByEmail.mockResolvedValue();
 
             await authController.sendResetEmail(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
@@ -123,8 +129,7 @@ describe("sendResetEmail", () => {
 
         //  sends back proper json response
         test("sends back proper json response", async () => {
-            mockDb.getUserByEmail.mockReturnValue({});
-            mockRes.status.mockReturnThis();
+            mockDb.getUserByEmail.mockResolvedValue();
 
             await authController.sendResetEmail(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
@@ -139,13 +144,23 @@ describe("sendResetEmail", () => {
     //  processes user data and sends confirmation to client
     describe("processes user data and sends confirmation to client", () => {
 
+        const dummyUser = {
+            userId: 123,
+            username: "username",
+            email: "fake@email.com"
+        };
+
+        beforeEach(() => {
+            mockDb.getUserByEmail.mockResolvedValue(dummyUser);
+        });
+
         //  create reset token
         test("create reset token", async () => {
 
             await authController.sendResetEmail(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockUtils.tokensTool.createToken).toHaveBeenCalledTimes(1);
-            expect(mockUtils.tokensTool.createToken.mock.calls[0][0]).toBe();
+            expect(mockUtils.tokensTool.createToken.mock.calls[0][0]).toBe(dummyUser.userId);
         });
 
         //  sends reset email
@@ -154,7 +169,7 @@ describe("sendResetEmail", () => {
             await authController.sendResetEmail(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockUtils.mailingTool.sendResetEmail).toHaveBeenCalledTimes(1);
-            expect(mockUtils.mailingTool.sendResetEmail.mock.calls[0][0]).toBe()
+            expect(mockUtils.mailingTool.sendResetEmail.mock.calls[0][0]).toBe(dummyUser.email);
         });
 
         //  sets response status to 200

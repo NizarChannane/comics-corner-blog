@@ -1,4 +1,4 @@
-import * as authController from "../../controllers/authController.js";
+import * as authController from "../../../../controllers/authController.js";
 import { jest, expect } from "@jest/globals";
 
 const mockReq = {
@@ -19,6 +19,7 @@ const mockRes = {
 
 const mockDb = {
     getUserByEmail: jest.fn(),
+    getUserById: jest.fn(),
     createUser: jest.fn(),
     isUserVerified: jest.fn(),
     verifyEmail: jest.fn()
@@ -51,12 +52,27 @@ const mockValidator = {
 //  verifyEmail
 describe("verifyEmail function", () => {
 
+    const dbResult = {
+        userId: 123,
+        username: "username",
+        email: "fake@email.com",
+        password: "$2y$10$9ituCqkY4GfEw.OecDHNZuhX1dvgVSjqZv99Hc3yBPtvzv2UE8x0.",
+        verified: false
+    };
+
     beforeEach(() => {
         mockRes.status.mockReturnThis();
+        mockUtils.tokensTool.decodeToken.mockReturnValue({ userId: 123 });
+        mockReq.param.token = "some token";
+        mockDb.getUserById.mockResolvedValue(dbResult);
     });
 
     //  gets token from request params
-    describe("get token from query param", async () => {
+    describe("get token from query param", () => {
+
+        beforeEach(() => {
+            mockReq.param.token = "";
+        });
 
         //  sets response status to 400 if param is missing
         test("sets response status to 400 if param is missing", async () => {
@@ -82,10 +98,10 @@ describe("verifyEmail function", () => {
 
 
     //  decodes token
-    describe("decode token", async () => {
+    describe("decode token", () => {
 
         beforeEach(() => {
-            mockReq.param.token = "some token";
+            mockUtils.tokensTool.decodeToken.mockReturnValue({});
         });
 
         //  passes token to decoding function
@@ -123,15 +139,24 @@ describe("verifyEmail function", () => {
     //  checks if email is already verified
     describe("checks if email is already verified", () => {
 
+        beforeEach(() => {
+            // mockDb.getUserById.mockResolvedValue({});
+            dbResult.verified = true;
+        });
+
+        afterEach(() => {
+            dbResult.verified = false;
+        })
+
         //  passes userId to db function
         test("passes userId to db function", async () => {
             const userId = 123;
-            mockUtils.tokensTool.decodeToken.mockReturnValue(userId);
+            mockUtils.tokensTool.decodeToken.mockResolvedValue({userId});
 
             await authController.verifyEmail(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
-            expect(mockDb.isUserVerified).toHaveBeenCalledTimes(1);
-            expect(mockDb.isUserVerified.mock.calls[0][0]).toBe(userId);
+            expect(mockDb.getUserById).toHaveBeenCalledTimes(1);
+            expect(mockDb.getUserById.mock.calls[0][0]).toBe(userId);
         });
 
         //  sets response status to 400 if email is already verified
@@ -150,7 +175,7 @@ describe("verifyEmail function", () => {
 
             expect(mockRes.send).toHaveBeenCalledTimes(1);
             expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
-                msg: "Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer."
+                msg: "Cette adresse mail a déjà été vérifiée. Vous pouvez vous connecter normalement."
             });
         });
     });
@@ -161,12 +186,12 @@ describe("verifyEmail function", () => {
 
         //  updates user in db
         test("update user in db", async () => {
-            mockDb.verifyEmail.mockReturnValue();
+            // mockDb.verifyEmail.mockReturnValue();
 
             await authController.verifyEmail(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockDb.verifyEmail).toHaveBeenCalledTimes(1);
-            expect(mockDb.verifyEmail.mock.calls[0][0]).toBe(1);
+            expect(mockDb.verifyEmail.mock.calls[0][0]).toBe(dbResult.userId);
         });
 
         //  sends user info
@@ -190,7 +215,7 @@ describe("verifyEmail function", () => {
 
             expect(mockRes.send).toHaveBeenCalledTimes(1);
             expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
-                msg: "L'adresse email a bien été vérifiée."
+                msg: "L'adresse email a bien été vérifiée. Vous pouvez vous connecter."
             });
         });
     });

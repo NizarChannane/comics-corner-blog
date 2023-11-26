@@ -1,4 +1,4 @@
-import * as authController from "../../controllers/authController.js";
+import * as authController from "../../../../controllers/authController.js";
 import { jest, expect } from "@jest/globals"
 
 const mockReq = {
@@ -48,6 +48,8 @@ describe("signin function", () => {
 
     beforeEach(() => {
         mockRes.status.mockReturnThis();
+        mockValidator.validationResult.mockReturnValue(validatorResultObj);
+        validatorResultObj.isEmpty.mockReturnValue(true);
     });
 
     //  check validation errors
@@ -115,7 +117,7 @@ describe("signin function", () => {
 
         //  sets response status code to 400 if doesn't exists
         test("sets response status code to 400 if doesn't exists", async () => {
-            mockDb.getUserByEmail.mockReturnValue({});
+            mockDb.getUserByEmail.mockReturnValue();
 
             await authController.signin(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
@@ -125,8 +127,7 @@ describe("signin function", () => {
 
         //  sends back proper json response
         test("sends back proper json response", async () => {
-            mockDb.getUserByEmail.mockReturnValue({});
-            mockRes.status.mockReturnThis();
+            mockDb.getUserByEmail.mockReturnValue();
 
             await authController.signin(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
@@ -141,21 +142,25 @@ describe("signin function", () => {
 
     //  compare passwords
     describe("compare passwords", () => {
+        
+        const dbResult = {
+            email: mockReq.body.email,
+            password: "$2y$10$9ituCqkY4GfEw.OecDHNZuhX1dvgVSjqZv99Hc3yBPtvzv2UE8x0."
+        };
+
+        beforeEach(() => {
+            mockDb.getUserByEmail.mockReturnValue(dbResult);
+        });
 
         //  passes hashed pwd and submitted pwd to comparison function
         test("passes hashed pwd and submitted pwd to comparison function", async () => {
-            const rawPwd = mockReq.body.password;
-            mockDb.getUserByEmail.mockReturnValue({
-                ...mockReq.body.email,
-                password: "$2y$10$9ituCqkY4GfEw.OecDHNZuhX1dvgVSjqZv99Hc3yBPtvzv2UE8x0."
-            });
 
             await authController.signin(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockUtils.encryptionTool.comparePwd).toHaveBeenCalledTimes(1);
-            console.log(mockReq.body.password);
+            // console.log(mockReq.body.password);
             expect(mockUtils.encryptionTool.comparePwd.mock.calls[0][0]).toBe(mockReq.body.password);
-            expect(mockUtils.encryptionTool.comparePwd.mock.calls[0][1]).toBe(password);
+            expect(mockUtils.encryptionTool.comparePwd.mock.calls[0][1]).toBe(dbResult.password);
         });
 
         //  sets response status to 400 if passwords don't match
@@ -177,7 +182,7 @@ describe("signin function", () => {
             expect(mockRes.status).toHaveBeenCalledTimes(1);
             expect(mockRes.send).toHaveBeenCalledTimes(1);
             expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
-                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe"
+                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
             });
         });
     });
@@ -189,13 +194,17 @@ describe("signin function", () => {
         const dbReturn = {
             userId: 1,
             username: "username",
-            ...mockReq.body.email,
+            email: mockReq.body.email,
             password: "$2y$10$9ituCqkY4GfEw.OecDHNZuhX1dvgVSjqZv99Hc3yBPtvzv2UE8x0."
         };
 
+        beforeEach(() => {
+            mockDb.getUserByEmail.mockReturnValue(dbReturn);
+            mockUtils.encryptionTool.comparePwd.mockReturnValue(true);
+        });
+
         //  creates jwt
         test("creates jwt", async () => {
-            mockDb.getUserByEmail.mockReturnValue(dbReturn);
 
             await authController.signin(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
@@ -211,7 +220,8 @@ describe("signin function", () => {
             await authController.signin(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockRes.cookie).toHaveBeenCalledTimes(1);
-            expect(mockRes.cookie.mock.calls[0][0]).toBe(fakeJwt);
+            expect(mockRes.cookie.mock.calls[0][0]).toBe("authToken");
+            expect(mockRes.cookie.mock.calls[0][1]).toBe(`Bearer ${fakeJwt}`);
         });
 
         //  sets response status to 200
@@ -232,9 +242,9 @@ describe("signin function", () => {
             expect(mockRes.status).toHaveBeenCalledTimes(1);
             expect(mockRes.send).toHaveBeenCalledTimes(1);
             expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
-                ...dbReturn.userId,
-                ...dbReturn.username,
-                ...dbReturn.email
+                userId: dbReturn.userId,
+                username: dbReturn.username,
+                email: dbReturn.email
             });
         });
 

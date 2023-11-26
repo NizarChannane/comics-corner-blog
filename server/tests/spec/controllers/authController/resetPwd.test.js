@@ -1,4 +1,4 @@
-import * as authController from "../../controllers/authController.js";
+import * as authController from "../../../../controllers/authController.js";
 import { jest, expect } from "@jest/globals";
 
 const mockReq = {
@@ -51,8 +51,37 @@ const mockValidator = {
 //  resetPwd
 describe("resetPwd", () => {
 
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywiaWF0IjoxNTE2MjM5MDIyfQ.VvlnVPAZ7j6e50xKQ9fEEMwpcFOYXYeZj-MWHj661jU";
+    const userId = 123;
+    const dummyUser = {
+        userId: 123,
+        username: "username",
+        email: "fake@email.com"
+    };
+    const dbResult = {
+        userId: 123,
+        username: "username",
+        email: "fake@email.com",
+        password: "$2y$10$9ituCqkY4GfEw.OecDHNZuhX1dvgVSjqZv99Hc3yBPtvzv2UE8x0.",
+        verified: false
+    };
+
+    beforeEach(() => {
+        mockRes.status.mockReturnThis();
+        mockValidator.validationResult.mockReturnValue(validatorResultObj);
+        validatorResultObj.isEmpty.mockReturnValue(true);
+        mockReq.cookies.resetToken = token;
+        mockUtils.tokensTool.decodeToken.mockResolvedValue({ userId });
+        mockDb.getUserById.mockResolvedValue(dbResult);
+        // mockDb.changePwd.mockResolvedValue()
+    });
+
     //  get validation errors
     describe("get validation errors", () => {
+
+        beforeEach(() => {
+            validatorResultObj.isEmpty.mockReturnValue(false);
+        });
 
         //  get validation results
         test("get validation results", async () => {
@@ -75,10 +104,10 @@ describe("resetPwd", () => {
         //  sends back array of errors in an object
         test("sends back array of errors in an object", async () => {
             const errObj = {
-                    location: "query",
-                    msg: "Invalid value",
-                    path: "person",
-                    type: "field"
+                location: "query",
+                msg: "Invalid value",
+                path: "person",
+                type: "field"
             };
             validatorResultObj.array.mockReturnValue([errObj]);
 
@@ -96,6 +125,10 @@ describe("resetPwd", () => {
     //  gets token from cookie
     describe("gets token from cookie", () => {
 
+        beforeEach(() => {
+            mockReq.cookies.resetToken = "";
+        });
+
         //  sets response status to 400 if cookie is missing/expired
         test("sets response status to 400 if cookie is missing", async () => {
 
@@ -111,7 +144,7 @@ describe("resetPwd", () => {
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockRes.send).toHaveBeenCalledTimes(1);
-            expect(mockRes.send.mock.calls[0][0]).toBe({
+            expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
                 msg: "Il semblerait que votre lien a expiré. Veuillez réessayer."
             });
         });
@@ -120,13 +153,17 @@ describe("resetPwd", () => {
     //  decodes token
     describe("decodes token", () => {
 
+        beforeEach(() => {
+            mockUtils.tokensTool.decodeToken.mockResolvedValue("");
+        });
+
         //  passes token to decoding function
         test("passes token to decoding function", async () => {
 
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockUtils.tokensTool.decodeToken).toHaveBeenCalledTimes(1);
-            expect(mockUtils.tokensTool.decodeToken.mock.calls[0][0]).toBe(mockReq.param.token);
+            expect(mockUtils.tokensTool.decodeToken.mock.calls[0][0]).toBe(token);
         });
 
         //  sets response status to 400 if token doesn't contain userId
@@ -145,7 +182,7 @@ describe("resetPwd", () => {
 
             expect(mockRes.send).toHaveBeenCalledTimes(1);
             expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
-                msg: "Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer."
+                msg: "Il semblerait que le serveur n'arrive pas à vous authentifier. Veuillez recommencer la procédure."
             });
         });
     });
@@ -153,13 +190,17 @@ describe("resetPwd", () => {
     //  checks if user exists
     describe("checks if user exists", () => {
 
+        beforeEach(() => {
+            mockDb.getUserById.mockResolvedValue("");
+        });
+
         //  passes userId to db function
         test("passes userId to db function", async () => {
 
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockDb.getUserById).toHaveBeenCalledTimes(1);
-            expect(mockDb.getUserById.mock.calls[0][0]).toBe();
+            expect(mockDb.getUserById.mock.calls[0][0]).toBe(userId);
         });
 
         //  sets response status to 400 if user doesn't exists
@@ -177,8 +218,8 @@ describe("resetPwd", () => {
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockRes.send).toHaveBeenCalledTimes(1);
-            expect(mockRes.send.mock.calls[0][0]).toBe({
-                msg: "Il semblerait que le serveur n'arrive pas à vous authentifier. Veuillez recommencer la procédure."
+            expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
+                msg: "Il semblerait que ce compte n'existe pas. Veuillez vous inscrire."
             });
         });
     });
@@ -192,7 +233,7 @@ describe("resetPwd", () => {
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockUtils.encryptionTool.hashPwd).toHaveBeenCalledTimes(1);
-            expect(mockUtils.encryptionTool.hashPwd.mock.calls[0][0]).toBe(mockReq.body.password);
+            expect(mockUtils.encryptionTool.hashPwd.mock.calls[0][0]).toBe(dbResult.password);
         });
 
         //  passes hashed password to db function
@@ -201,7 +242,10 @@ describe("resetPwd", () => {
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockDb.changePwd).toHaveBeenCalledTimes(1);
-            expect(mockDb.changePwd.mock.calls[0][0]).toBe();
+            expect(mockDb.changePwd.mock.calls[0][0]).toBe(dbResult.userId);
+            expect(mockDb.changePwd.mock.calls[0][1]).toBe(
+                mockUtils.encryptionTool.hashPwd(dbResult.password)
+            );
         });
 
         //  sets response status code to 200 when user updated
@@ -219,7 +263,7 @@ describe("resetPwd", () => {
             await authController.resetPwd(mockDb, mockUtils, mockValidator)(mockReq, mockRes);
 
             expect(mockRes.send).toHaveBeenCalledTimes(1);
-            expect(mockRes.send.mock.calls[0][0]).toBe({
+            expect(mockRes.send.mock.calls[0][0]).toStrictEqual({
                 msg: "Le mot de passe a bien été modifié. Vous pouvez vous connecter en utilisant le nouveau mot de passe."
             });
         });

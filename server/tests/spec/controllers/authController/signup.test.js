@@ -1,4 +1,4 @@
-import * as authController from "../../controllers/authController.js";
+import * as authController from "../../../../controllers/authController.js";
 import { jest, expect } from "@jest/globals";
 
 const mockReq = {
@@ -87,10 +87,10 @@ describe("signup function", () => {
         //  sends back array of errors in an object
         test("sends back array of errors in an object", async () => {
             const errObj = {
-                    location: "query",
-                    msg: "Invalid value",
-                    path: "person",
-                    type: "field"
+                location: "query",
+                msg: "Invalid value",
+                path: "person",
+                type: "field"
             };
             validatorResultObj.array.mockReturnValue([errObj]);
 

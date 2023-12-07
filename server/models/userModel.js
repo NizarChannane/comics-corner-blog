@@ -1,4 +1,4 @@
-import * as db from "../config/db.config";
+import * as db from "../config/db.config.js";
 
 export const createUser = async ({ username, lastName, firstName, email, password }) => {
     try {
@@ -9,33 +9,35 @@ export const createUser = async ({ username, lastName, firstName, email, passwor
             email,
             password,
             false,
-            3
+            "user"
         ];
 
-        const res = await db.query(
-            "INSERT INTO utilisateurs SET utilisateur=?, nom=?, prenom =?; email=?, mdp=?, verified=?, id_role=?",
+        const [rows, fields] = await db.query(
+            "INSERT INTO utilisateurs SET username=?, nom=?, prenom =?, email=?, mdp=?, verified=?, role=?",
             newUser
         );
-        console.log(res);
 
-        return res[0];
+        return rows;
 
     } catch (err) {
         console.log(err);
+        throw err;
     }
 };
 
 
 export const getUserByEmail = async (email) => {
     try {
-        const res = await db.query(
-            "SELECT username, email FROM utilsateurs WHERE email=?",
+        const [rows, fields] = await db.query(
+            "SELECT * FROM utilisateurs WHERE email=?",
             [email]
         );
 
-        return res;
+        return rows;
+
     } catch (err) {
         console.log(err);
+        throw err;
     };
 
 };
@@ -43,56 +45,60 @@ export const getUserByEmail = async (email) => {
 
 export const getUserById = async (id) => {
     try {
-        const res = await db.query(
-            "SELECT username, email FROM utilsateurs WHERE id_utilisateur=?",
+        const [rows, fields] = await db.query(
+            "SELECT userId, username, email, role FROM utilisateurs WHERE userId=?",
             [id]
         );
 
-        return res;
+        return rows[0];
     } catch (err) {
         console.log(err);
+        throw err;
     };
 };
 
 
 export const isUserVerified = async (id) => {
     try {
-        const res = await db.query(
-            "SELECT verified FROM utilisateurs WHERE id_utilisateur=?",
+        const [rows, fields] = await db.query(
+            "SELECT verified FROM utilisateurs WHERE userId=?",
             [id]
         );
 
-        return res;
+        return rows[0];
     } catch (err) {
         console.log(err);
+        throw err;
     };
 };
 
 
 export const verifyEmail = async (id) => {
     try {
-        const res = await db.query(
-            "UPDATE utilisateurs SET verified=1 WHERE id_utilisateur=?",
+        const [rows, fields] = await db.query(
+            "UPDATE utilisateurs SET verified=1 WHERE userId=?",
             [id]
         );
 
-        return res;
+        return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     };
 };
 
 
-export const changePwd = async ({id, password}) => {
+export const changePwd = async (id, password) => {
     try {
-        const res = await db.query(
-            "UPDATE utilisateurs SET password=? WHERE id=?",
+        const [rows, fields] = await db.query(
+            "UPDATE utilisateurs SET mdp=? WHERE userId=?",
             [password, id]
         );
 
-        return res;
+        return rows;
     } catch (err) {
         console.log(err);
+        throw err;
     };
 };
 
@@ -108,13 +114,14 @@ export const changePwd = async ({id, password}) => {
 
 export const deleteUser = async (id) => {
     try {
-        const res = await db.query(
-            "DELETE FROM utilisateurs WHERE id_utilisateur=?",
+        const [rows, fields] = await db.query(
+            "DELETE FROM utilisateurs WHERE userId=?",
             [id]
         );
 
-        return res;
+        return [rows, fields];
     } catch (err) {
         console.log(err);
+        throw err;
     };
 };

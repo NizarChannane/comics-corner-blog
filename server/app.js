@@ -1,12 +1,14 @@
 import express from "express";
-import getAuthRouter from "./routes/authRouter.js"
+import router from "./routes/routerIndex.js";
+import cookieParser from "cookie-parser";
 
-const createApp = (db) => {
+const createApp = () => {
     const app = express();
 
     app.use(express.json());
+    app.use(cookieParser("cookieSecret"));
 
-    app.use("/auth", getAuthRouter(db));
+    app.use(router);
 
     return app;
 };

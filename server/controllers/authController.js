@@ -1,255 +1,333 @@
 export const signup = (db, utils, validator) => async (req, res) => {
-    const validationErrors = validator.validationResult(req);
+    try {
+        const validationErrors = validator.validationResult(req);
 
-    if(!validationErrors.isEmpty()) {
-        const errors = validationErrors.array();
-        res.status(400).send({ errors });
-        return;
-    };
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
 
-    const userExists = db.getUserByEmail(req.body.email);
+        const data = validator.matchedData(req);
 
-    if(userExists) {
-        res.status(400).send({
-            msg: "Un compre est déjà associé à cette adress mail."
+        const userExists = await db.getUserByEmail(data.email);
+
+        if(userExists.length) {
+            res.status(400).send({
+                msg: "Un compte est déjà associé à cette adresse email."
+            });
+            return;
+        };
+
+        const hashedPwd = await utils.encryptionTool.hashPwd(data.password);
+        data.password = hashedPwd;
+
+        const dbResult = await db.createUser(data);
+
+        const token = await utils.tokensTool.createToken({ userId: dbResult.insertId });
+
+        await utils.mailingTool.sendVerificationEmail(token);
+
+        res.status(200).send({
+            userId: dbResult.insertId,
+            msg: "Votre compte a bien été créé. Veuillez cliquer sur le lien se trouvant dans le mail de vérification qui vous a été envoyé.",
+            //  NOT FOR PRODUCTION
+            // token: token
         });
         return;
+
+    } catch (error) {
+        console.log("error caught in signup controller ");
+        console.log(error.message);
     };
-
-    const hashedPwd = await utils.encryptionTool.hashPwd(req.body.password);
-    req.body.password = hashedPwd;
-
-    const userData = {...req.body};
-
-    const dbResult = await db.createUser(userData);
-
-    await utils.mailingTool.sendVerificationEmail(userData.email);
-
-    res.status(200).send({
-        userId: dbResult,
-        msg: "Votre compte a bien été créé."
-    });
-    return;
 
 };
 
 
 export const signin = (db, utils, validator) => async (req, res) => {
-    const validationErrors = validator.validationResult(req);
+    try {
+        const validationErrors = validator.validationResult(req);
 
-    if(!validationErrors.isEmpty()) {
-        const errors = validationErrors.array();
-        res.status(400).send({ errors });
-        return;
-    };
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
 
-    const userInfo = await db.getUserByEmail(req.body.email);
+        const data = validator.matchedData(req);
 
-    if(!userInfo) {
-        res.status(400).send({
-            msg: "Aucun compte n'est associé à cette adresse mail. Veuillez vous inscire."
+        const userInfo = (await db.getUserByEmail(data.email))[0];
+
+        if(!userInfo) {
+            res.status(400).send({
+                msg: "Aucun compte n'est associé à cette adresse mail. Veuillez vous inscire."
+            });
+            return;
+        };
+
+        const pwdMatch = await utils.encryptionTool.comparePwd(data.password, userInfo.mdp);
+
+        if(!pwdMatch) {
+            res.status(400).send({
+                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
+            });
+            return;
+        };
+
+        if(!userInfo.verified) {
+            res.status(400).send({
+                msg: "Il semblerait que votre adresse ne soit pas encore vérifiée, veuillez consulter le mail qui vous a été envoyé lors de la création de votre compte"
+            });
+            return;
+        };
+
+        const token = await utils.tokensTool.createToken({ userId: userInfo.userId });
+
+        res.cookie("ccAuthCookie", token, { httpOnly: true, signed: true });
+
+        res.status(200).send({
+            userId: userInfo.userId,
+            username: userInfo.username,
+            email: userInfo.email
         });
         return;
+
+    } catch (error) {
+        console.log("error caught in signin controller ");
+        console.log(error.message);
     };
-
-    const pwdMatch = await utils.encryptionTool.comparePwd(req.body.password, userInfo.password);
-
-    if(!pwdMatch) {
-        res.status(400).send({
-            msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
-        });
-        return;
-    };
-
-    const token = await utils.tokensTool.createToken(userInfo.userId);
-
-    res.cookie("authToken", `Bearer ${token}`);
-
-    res.status(200).send({
-        userId: userInfo.userId,
-        username: userInfo.username,
-        email: userInfo.email
-    });
-    return;
 
 };
 
 
+export const signout = async (req, res) => {
+    try {
+        res.clearCookie("ccAuthCookie").status(200).send({
+            msg: "Vous avez bien été déconnecté."
+        });
+    } catch (error) {
+        console.log("error caught in signout controller ");
+        console.log(error.message);
+    }
+};
+
+
 export const verifyEmail = (db, utils, validator) => async (req, res) => {
-    const { token } = req.param;
+    try {
+        const validationErrors = validator.validationResult(req);
 
-    if(!token) {
-        res.status(400).send({
-            msg: "Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer."
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
+
+        const { token } = validator.matchedData(req);
+
+        if(!token) {
+            res.status(400).send({
+                msg: "Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer."
+            });
+            return;
+        };
+
+        const decodedToken = await utils.tokensTool.decodeToken(token);
+        
+        if(decodedToken.message === "invalid token" || !decodedToken.userId) {
+            res.status(400).send({
+                msg: "Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer."
+            });
+            return;
+        };
+
+        const isEmailVerified = (await db.isUserVerified(decodedToken.userId))?.verified;
+
+        if(isEmailVerified === undefined) {
+            res.status(400).send({
+                msg: "Il semblerait que ce compte n'existe pas ou a été supprimé."
+            });
+            return;
+        };
+
+        if(isEmailVerified) {
+            res.status(400).send({
+                msg: "Cette adresse mail a déjà été vérifiée. Vous pouvez vous connecter normalement."
+            });
+            return;
+        };
+
+        await db.verifyEmail(decodedToken.userId);
+
+        res.status(200).send({
+            msg: "L'adresse email a bien été vérifiée. Vous pouvez vous connecter."
         });
         return;
+
+    } catch (error) {
+        console.log("error caught in verifyEmail controller ");
+        console.log(error.message);
     };
-
-    const decodedToken = await utils.tokensTool.decodeToken(token);
-
-    if(!decodedToken.userId) {
-        res.status(400).send({
-            msg: "Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer."
-        })
-        return;
-    };
-
-    const userInfo = await db.getUserById(decodedToken.userId);
-
-    if(userInfo.verified) {
-        res.status(400).send({
-            msg: "Cette adresse mail a déjà été vérifiée. Vous pouvez vous connecter normalement."
-        });
-        return;
-    };
-
-    await db.verifyEmail(userInfo.userId);
-
-    res.status(200).send({
-        msg: "L'adresse email a bien été vérifiée. Vous pouvez vous connecter."
-    });
-    return;
 
 };
 
 
 export const authenticate = (db, utils, validator, role) => async (req, res, next) => {
-    const authHeader = req.get("Authorization");
+    try {
+        const validationErrors = validator.validationResult(req);
 
-    if(!authHeader) {
-        res.status(401).send({
-            msg: "Vous n'étes pas autorisé à accéder à cette ressource. Veuillez vous connecter."
-        });
-        return;
-    };
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
 
-    const headerArray = authHeader.split(" ");
+        const token = (validator.matchedData(req)).ccAuthCookie;
 
-    if(headerArray[0] !== "Bearer") {
-        res.status(401).send({
-            msg: "L'authentification a échoué. Veuillez réessayer."
-        });
-        return;
-    };
+        if(!token) {
+            res.status(401).send({
+                msg: "Vous n'étes pas autorisé à accéder à cette ressource. Veuillez vous connecter."
+            });
+            return;
+        };
 
-    const decodedToken = await utils.tokensTool.decodeToken(headerArray[1]);
+        const decodedToken = await utils.tokensTool.decodeToken(token);
 
-    if(!decodedToken.userId) {
-        res.status(401).send({
-            msg: "Vous n'étes pas autorisé à accéder à cette ressource. Veuillez vous connecter."
-        });
-        return;
-    };
+        if(!decodedToken.userId) {
+            res.status(401).send({
+                msg: "Vous n'étes pas autorisé à accéder à cette ressource. Veuillez vous connecter."
+            });
+            return;
+        };
 
-    const userInfo = await db.getUserById(decodedToken.userId);
+        const userInfo = await db.getUserById(decodedToken.userId);
 
-    switch (role) {
-        case "user":
-            if(userInfo.role !== "user" || userInfo !== "writer" || userInfo !== "admin") {
+        switch (role) {
+            case "user":
+                if(userInfo.role !== "user" && userInfo.role !== "writer" && userInfo.role !== "admin") {
+                    res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
+                    return;
+                };
+                break;
+
+            case "writer":
+                if(userInfo.role !== "writer" && userInfo.role !== "admin") {
+                    res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
+                    return;
+                };
+                break;
+
+            case "admin":
+                if(userInfo.role !== "admin") {
+                    res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
+                    return;
+                };
+                break;
+
+            default:
                 res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
-                return;
-            };
-            break;
+                break;
+        };
 
-        case "writer":
-            if(userInfo.role !== "writer" || userInfo !== "admin") {
-                res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
-                return;
-            };
-            break;
+        req.user = { ...userInfo };
+        next();
+        // return;
 
-        case "admin":
-            if(userInfo.role !== "admin") {
-                res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
-                return;
-            };
-            break;
-
-        default:
-            res.status(401).send({ msg: "Vos droits d'accèes ne permmettent pas cette action." })
-            break;
+    } catch (error) {
+        console.log("error caught in authenticate controller ");
+        console.log(error.message);
     };
-
-    next();
-    // return;
 
 };
 
 
 export const sendResetEmail = (db, utils, validator) => async (req, res) => {
-    const validationErrors = validator.validationResult(req);
+    try {
+        const validationErrors = validator.validationResult(req);
 
-    if(!validationErrors.isEmpty()) {
-        const errors = validationErrors.array();
-        res.status(400).send({ errors });
-        return;
-    };
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
 
-    const userInfo = await db.getUserByEmail(req.body.email);
+        const data = validator.matchedData(req);
 
-    if(!userInfo) {
-        res.status(400).send({
-            msg: "Aucun compte n'est associé à cette adresse mail. Veuillez vous inscire."
+        const userInfo = (await db.getUserByEmail(data.email))[0];
+
+        if(!userInfo) {
+            res.status(400).send({
+                msg: "Aucun compte n'est associé à cette adresse mail. Veuillez vous inscire."
+            });
+            return;
+        };
+
+        const resetToken = await utils.tokensTool.createToken({ userId: userInfo.userId });
+
+        await utils.mailingTool.sendResetEmail(userInfo.email, resetToken);
+
+        res.status(200).send({
+            msg: "Un mail de réinitialisation a été envoyé sur votre adresse mail."
         });
         return;
+
+    } catch (error) {
+        console.log("error caught in sendResetEmail controller ");
+        console.log(error.message);
     };
-
-    const resetToken = await utils.tokensTool.createToken(userInfo.userId);
-
-    await utils.mailingTool.sendResetEmail(userInfo.email, resetToken);
-
-    res.status(200).send({
-        msg: "L'adresse email a bien été vérifiée."
-    });
-    return;
 
 };
 
 
 export const resetPwd = (db, utils, validator) => async (req, res) => {
-    const validationErrors = validator.validationResult(req);
+    try {
+        const validationErrors = validator.validationResult(req);
 
-    if(!validationErrors.isEmpty()) {
-        const errors = validationErrors.array();
-        res.status(400).send({ errors });
-        return;
-    };
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
 
-    const { resetToken } = req.cookies;
+        const data = validator.matchedData(req);
 
-    if(!resetToken) {
-        res.status(400).send({
-            msg: "Il semblerait que votre lien a expiré. Veuillez réessayer."
+        if(!data.token) {
+            res.status(400).send({
+                msg: "Il semblerait que votre lien a expiré. Veuillez réessayer."
+            });
+            return;
+        };
+
+        const decodedToken = await utils.tokensTool.decodeToken(data.token);
+
+        if(!decodedToken.userId) {
+            res.status(400).send({
+                msg: "Il semblerait que le serveur n'arrive pas à vous authentifier. Veuillez recommencer la procédure."
+            });
+            return;
+        };
+
+        const userInfo = await db.getUserById(decodedToken.userId);
+
+        if(!userInfo) {
+            res.status(400).send({
+                msg: "Il semblerait que ce compte n'existe pas. Veuillez vous inscrire."
+            })
+            return;
+        };
+
+        const hashedPwd = await utils.encryptionTool.hashPwd(data.password);
+
+        await db.changePwd(userInfo.userId, hashedPwd);
+
+        res.status(200).send({
+            msg: "Le mot de passe a bien été modifié. Vous pouvez vous connecter en utilisant le nouveau mot de passe."
         });
         return;
+
+    } catch (error) {
+        console.log("error caught in resetPwd controller ");
+        console.log(error.message);
     };
-
-    const decodedToken = await utils.tokensTool.decodeToken(resetToken);
-
-    if(!decodedToken.userId) {
-        res.status(400).send({
-            msg: "Il semblerait que le serveur n'arrive pas à vous authentifier. Veuillez recommencer la procédure."
-        });
-        return;
-    };
-
-    const userInfo = await db.getUserById(decodedToken.userId);
-
-    if(!userInfo) {
-        res.status(400).send({
-            msg: "Il semblerait que ce compte n'existe pas. Veuillez vous inscrire."
-        })
-        return;
-    };
-
-    const hashedPwd = await utils.encryptionTool.hashPwd(userInfo.password);
-
-    await db.changePwd(userInfo.userId, hashedPwd);
-
-    res.status(200).send({
-        msg: "Le mot de passe a bien été modifié. Vous pouvez vous connecter en utilisant le nouveau mot de passe."
-    });
-    return;
 
 };
 

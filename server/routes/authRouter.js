@@ -23,6 +23,13 @@ router.post(
 );
 
 router.get(
+    "/get-auth-status",
+    validationSchemas.authenticateSchema,
+    authController.authenticate(db.authenticate, utils, validator, "user"),
+    authController.getAuthStatus
+);
+
+router.get(
     "/signout",
     validationSchemas.authenticateSchema,
     authController.authenticate(db.authenticate, utils, validator, "user"),

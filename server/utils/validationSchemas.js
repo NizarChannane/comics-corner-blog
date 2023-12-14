@@ -9,7 +9,7 @@ export const signupSchema = [
         .escape()
         .isLength({ min: 2, max: 35 })
             .withMessage("Le nom d'utilisateur doit contenir entre 2 et 35 caractères"),
-    body("lastName", "Le champ nom n'est pas valide")
+    body("lastname", "Le champ nom n'est pas valide")
         .trim()
         .notEmpty()
             .bail()
@@ -17,7 +17,7 @@ export const signupSchema = [
         .escape()
         .isLength({ min: 2, max: 35 })
             .withMessage("Le nom doit contenir entre 2 et 35 caractères"),
-    body("firstName", "Le champ prénom n'est pas valide")
+    body("firstname", "Le champ prénom n'est pas valide")
         .trim()
         .notEmpty()
             .bail()

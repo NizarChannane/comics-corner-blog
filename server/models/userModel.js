@@ -1,11 +1,11 @@
 import * as db from "../config/db.config.js";
 
-export const createUser = async ({ username, lastName, firstName, email, password }) => {
+export const createUser = async ({ username, lastname, firstname, email, password }) => {
     try {
         const newUser = [
             username,
-            lastName,
-            firstName,
+            lastname,
+            firstname,
             email,
             password,
             false,

@@ -1,5 +1,6 @@
 export const signup = (db, utils, validator) => async (req, res) => {
     try {
+        console.log("request received");
         const validationErrors = validator.validationResult(req);
 
         if(!validationErrors.isEmpty()) {
@@ -46,6 +47,7 @@ export const signup = (db, utils, validator) => async (req, res) => {
 
 export const signin = (db, utils, validator) => async (req, res) => {
     try {
+        console.log("request received");
         const validationErrors = validator.validationResult(req);
 
         if(!validationErrors.isEmpty()) {
@@ -69,7 +71,7 @@ export const signin = (db, utils, validator) => async (req, res) => {
 
         if(!pwdMatch) {
             res.status(400).send({
-                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
+                error: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
             });
             return;
         };
@@ -88,7 +90,7 @@ export const signin = (db, utils, validator) => async (req, res) => {
         res.status(200).send({
             userId: userInfo.userId,
             username: userInfo.username,
-            email: userInfo.email
+            msg: "Vous êtes connecté. Vous pouvez accéder à votre profil utilisateur."
         });
         return;
 
@@ -97,6 +99,17 @@ export const signin = (db, utils, validator) => async (req, res) => {
         console.log(error.message);
     };
 
+};
+
+export const getAuthStatus = async (req, res) => {
+    try {
+        res.status(200).send({
+            ...req.user
+        })
+    } catch (error) {
+        console.log("error caught in getAuthStatus controller ");
+        console.log(error.message);
+    }
 };
 
 

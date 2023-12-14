@@ -5,6 +5,7 @@
   "type": "module",
   "main": "server/server.js",
   "scripts": {
+    "dev-concurrently": "concurrently \"npm start\" \"npm run dev --prefix client\"",
     "start": "nodemon server/server.js",
     "unit-test": "jest --testMatch **/tests/spec/**/*.js --resetMocks",
     "tdd-unit-test": "jest --testMatch **/tests/spec/**/*.js --resetMocks --watchAll",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.20",
+    "concurrently": "^8.2.2",
     "jest": "^29.7.0",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3"

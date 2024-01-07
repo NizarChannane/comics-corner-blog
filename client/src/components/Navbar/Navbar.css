@@ -1,0 +1,11 @@
+@import "../../variables.css";
+
+.navbar-items {
+    color: var(--nav-color);
+    /* color: red; */
+    /* text-transform: none; */
+}
+
+.CC-logo {
+    width: 3rem;
+}

@@ -1,10 +1,22 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-import './index.css'
+import CssBaseline from '@mui/material/CssBaseline';
+import { BrowserRouter } from 'react-router-dom';
+import { AuthContextProvider } from "./contexts/AuthContext";
+import { StyledEngineProvider } from '@mui/material/styles';
+// import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <StyledEngineProvider injectFirst>
+      <AuthContextProvider>
+        <BrowserRouter>
+          <CssBaseline />
+          <App />
+        </BrowserRouter>
+      </AuthContextProvider>
+    </StyledEngineProvider>
   </React.StrictMode>,
 )
+

@@ -71,7 +71,7 @@ export const signin = (db, utils, validator) => async (req, res) => {
 
         if(!pwdMatch) {
             res.status(400).send({
-                error: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
+                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe."
             });
             return;
         };
@@ -90,6 +90,7 @@ export const signin = (db, utils, validator) => async (req, res) => {
         res.status(200).send({
             userId: userInfo.userId,
             username: userInfo.username,
+            role: userInfo.role,
             msg: "Vous êtes connecté. Vous pouvez accéder à votre profil utilisateur."
         });
         return;
@@ -279,7 +280,7 @@ export const sendResetEmail = (db, utils, validator) => async (req, res) => {
         await utils.mailingTool.sendResetEmail(userInfo.email, resetToken);
 
         res.status(200).send({
-            msg: "Un mail de réinitialisation a été envoyé sur votre adresse mail."
+            msg: "Un lien de réinitialisation a été envoyé sur votre adresse mail."
         });
         return;
 

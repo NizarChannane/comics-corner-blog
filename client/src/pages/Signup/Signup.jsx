@@ -12,6 +12,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useSignup } from '../../hooks/auth/useSignup';
+import { useFetch } from '../../hooks/auth/useFetch';
 import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -64,22 +65,22 @@ const Signup = () => {
     const { errors } = formState;
     const [open, setOpen] = useState(false);
     const [signupSuccess, setSignupSuccess] = useState(null);
-    const { signup, isLoading, serverMsg, error } = useSignup();
+    const { customFetch, isLoading, serverMsg, data, success, error } = useFetch();
+    // const { user, dispatch } = useAuthContext();
 
     useEffect(() => {
         if (error) {
             setOpen(true);
         };
 
-        if(error === false) {
+        if (success) {
             setSignupSuccess(true);
-        };
-    }, [error]);
+        }
+    }, [error, success]);
 
-    const onSubmit = async (data, e) => {
+    const onSubmit = async (formData, e) => {
         e.preventDefault();
-        const { username, firstname, lastname, email, password } = data;
-        await signup(username, firstname, lastname, email, password);
+        await customFetch("POST", "auth/signup", formData);
     };
 
     if(signupSuccess) {

@@ -136,3 +136,19 @@ export const passwordResetSchema = [
             minSymbols: 1
         }).withMessage("Le mot de passe doit contenir au moins 8 caractères, dont au moins une majuscule, une minuscule, un chiffre et un sumbole")
 ];
+
+export const updatePasswordSchema = [
+    body(["oldPassword", "newPassword"], "Le mot de passe ne remplit pas les conditions")
+        .trim()
+        .notEmpty()
+            .bail()
+            .withMessage("Champ obligatoire, doit contenir un mot de passe")
+        .escape()
+        .isStrongPassword({
+            minLength: 8,
+            minLowercase: 1,
+            minUppercase: 1,
+            minNumbers: 1,
+            minSymbols: 1
+        }).withMessage("Le mot de passe doit contenir au moins 8 caractères, dont au moins une majuscule, une minuscule, un chiffre et un sumbole")
+];

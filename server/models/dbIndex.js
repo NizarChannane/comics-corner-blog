@@ -23,6 +23,11 @@ const getAuthDb = () => {
             getUserById: userModel.getUserById,
             changePwd: userModel.changePwd
         },
+        updatePwd: {
+            getUserByEmail: userModel.getUserByEmail,
+            getUserById: userModel.getUserById,
+            changePwd: userModel.changePwd
+        },
         authenticate: {
             getUserById: userModel.getUserById
         },

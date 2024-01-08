@@ -8,6 +8,7 @@ import Signup from './pages/Signup/Signup';
 import SignupConfirm from './pages/Signup/SignupConfirm';
 import Signin from './pages/Signin/Signin';
 import SendResetEmail from "./pages/PwdReset/SendResetEmail";
+import EmailVerification from './pages/Signup/EmailVerification';
 import PwdReset from './pages/PwdReset/PwdReset';
 import Footer from './components/Footer/Footer';
 import NotFound from './pages/Errors/NotFound';
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/signup-success" element={<SignupConfirm />} />
+                <Route path="/email-verification" element={<EmailVerification />} />
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/send-reset-email" element={<SendResetEmail />} />
                 <Route path="/password-reset" element={<PwdReset />} />

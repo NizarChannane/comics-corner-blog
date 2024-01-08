@@ -88,9 +88,11 @@ export const signin = (db, utils, validator) => async (req, res) => {
         res.cookie("ccAuthCookie", token, { httpOnly: true, signed: true });
 
         res.status(200).send({
-            userId: userInfo.userId,
-            username: userInfo.username,
-            role: userInfo.role,
+            data: {
+                userId: userInfo.userId,
+                username: userInfo.username,
+                role: userInfo.role,
+            },
             msg: "Vous êtes connecté. Vous pouvez accéder à votre profil utilisateur."
         });
         return;
@@ -106,7 +108,7 @@ export const getAuthStatus = async (req, res) => {
     try {
         res.status(200).send({
             ...req.user
-        })
+        });
     } catch (error) {
         console.log("error caught in getAuthStatus controller ");
         console.log(error.message);
@@ -345,6 +347,42 @@ export const resetPwd = (db, utils, validator) => async (req, res) => {
 
 };
 
+export const updatePwd = (db, utils, validator) => async (req, res) => {
+    try {
+        const validationErrors = validator.validationResult(req);
+
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
+
+        const data = validator.matchedData(req);
+
+        const userInfo = (await db.getUserByEmail(req.user.email))[0];
+
+        const pwdMatch = await utils.encryptionTool.comparePwd(data.oldPassword, userInfo.mdp);
+
+        if(!pwdMatch) {
+            res.status(400).send({
+                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe depuis la page de connexion."
+            });
+            return;
+        };
+
+        const hashedPwd = await utils.encryptionTool.hashPwd(data.newPassword);
+
+        await db.changePwd(userInfo.userId, hashedPwd);
+
+        res.status(200).send({
+            msg: "Le mot de passe a bien été modifié. Vous pouvez vous connecter en utilisant le nouveau mot de passe."
+        });
+        return;
+    } catch (error) {
+        console.log("error caught in updatePwd controller ");
+        console.log(error.message);
+    };
+};
 
 export const deleteAccount = (db, utils, validator) => async (req, res) => {
     

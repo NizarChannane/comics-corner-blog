@@ -13,6 +13,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuthContext } from '../../hooks/auth/useAuthContext';
 import { useSignin } from '../../hooks/auth/useSignin';
+import { useFetch } from '../../hooks/auth/useFetch';
 import { Link, Navigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -49,20 +50,23 @@ const Signin = () => {
     const { register, handleSubmit, formState } = form;
     const { errors } = formState;
     const [open, setOpen] = useState(false);
-    const { signin, isLoading, serverMsg, error } = useSignin();
-    const { user } = useAuthContext();
+    const { customFetch, isLoading, serverMsg, data, success, error } = useFetch();
+    const { user, dispatch } = useAuthContext();
 
     useEffect(() => {
         if (error) {
             setOpen(true);
         };
 
-    }, [error]);
+        if (success) {
+            dispatch({ type: "SIGNIN", payload: { ...data } });
+        };
+    }, [error, success]);
 
-    const onSubmit = async (data, e) => {
+
+    const onSubmit = async (formData, e) => {
         e.preventDefault();
-        const { email, password } = data;
-        await signin(email, password);
+        await customFetch("POST", "auth/signin", formData);
     };
 
     return (

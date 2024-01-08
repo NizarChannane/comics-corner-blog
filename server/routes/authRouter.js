@@ -54,6 +54,14 @@ router.put(
     authController.resetPwd(db.resetPwd, utils, validator)
 );
 
+router.put(
+    "/update-pwd",
+    validationSchemas.authenticateSchema,
+    validationSchemas.updatePasswordSchema,
+    authController.authenticate(db.authenticate, utils, validator, "user"),
+    authController.updatePwd(db.updatePwd, utils, validator)
+);
+
 // router.delete(
 //     "/delete-account",
 

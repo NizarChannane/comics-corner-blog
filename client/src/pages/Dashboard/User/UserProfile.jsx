@@ -12,6 +12,8 @@ import Collapse from "@mui/material/Collapse";
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import CloseIcon from '@mui/icons-material/Close';
+import SuccessMsg from '../../../components/SuccessMsg/SuccessMsg';
+import { Navigate } from 'react-router-dom';
 import { useAuthContext } from "../../../hooks/auth/useAuthContext";
 import { useFetch } from '../../../hooks/auth/useFetch';
 import { useForm } from 'react-hook-form';
@@ -20,7 +22,7 @@ import * as yup from "yup";
 import YupPassword from "yup-password";
 YupPassword(yup);
 
-const schema = yup.object({
+const updateSchema = yup.object({
     oldPassword: yup
         .string()
         .trim()
@@ -46,45 +48,92 @@ const schema = yup.object({
         .oneOf([yup.ref("newPassword")], "Les mots de passe ne correspondent pas")
 });
 
+const deleteSchema = yup.object({
+    password: yup
+        .string()
+        .trim()
+        .required("Champ obligatoire")
+        .min(8, "Le mot de passe doit contenir 8 caractères au minimum")
+        .minUppercase(1, "Doit contenir au moins une majuscule")
+        .minLowercase(1, "Doit contenir au moins une minuscule")
+        .minNumbers(1, "Doit contenir au moins un chiffre")
+        .minSymbols(1, "Doit contenir au moins un symbole"),
+});
+
 const UserProfile = () => {
-    const form = useForm({
+    const updateForm = useForm({
         defaultValues: {
             oldPassword: "",
             newPassword: "",
             newPasswordConfirm: ""
         },
-        resolver: yupResolver(schema)
+        resolver: yupResolver(updateSchema)
     });
 
-    const { register, handleSubmit, reset, formState } = form;
-    const { errors } = formState;
-    const [open, setOpen] = useState(false);
-    const { customFetch, isLoading, serverMsg, data, success, error } = useFetch();
-    const { user } = useAuthContext();
+    const deleteForm = useForm({
+        defaultValues: {
+            password: ""
+        },
+        resolver: yupResolver(deleteSchema)
+    });
+
+    const [updateOpen, setUpdateOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
+    const updateFetch = useFetch();
+    const deleteFetch = useFetch();
+    const { user, dispatch } = useAuthContext();
 
     useEffect(() => {
-        if (error || success) {
-            setOpen(true);
+        if (updateFetch.error || updateFetch.success) {
+            setUpdateOpen(true);
         };
 
-        if (success) {
-            reset();
+        if (updateFetch.success) {
+            updateForm.reset();
         };
-    }, [error, success]);
 
-    const onSubmit = async (data, e) => {
+        if (deleteFetch.error) {
+            setDeleteOpen(true);
+        };
+
+        if (deleteFetch.success) {
+            deleteForm.reset();
+        };
+    }, [updateFetch.error, updateFetch.success, deleteFetch.error, deleteFetch.success]);
+
+    useEffect(() => {
+        if (deleteFetch.data && deleteFetch.data.accDeleted) {
+            dispatch({ type: "SIGNOUT" });
+        };
+    }, [deleteFetch.data])
+
+    const onSubmitUpdatePwd = async (data, e) => {
         e.preventDefault();
         const { oldPassword, newPassword } = data;
-        await customFetch("PUT", "auth/update-pwd", { oldPassword, newPassword });
+        await updateFetch.customFetch("PUT", "auth/update-pwd", { oldPassword, newPassword });
+    };
+
+    const onSubmitDeleteAcc = async (data, e) => {
+        e.preventDefault();
+        await deleteFetch.customFetch("POST", "auth/delete-account", data);
+    };
+
+    const onConfirmDelete = async () => {
+        if (deleteFetch.data.allowDelete) {
+            await deleteFetch.customFetch("DELETE", "auth/confirm-delete-account")
+        };
     };
 
     return (
         <Container>
+
             <Typography sx={{ color: "grey", mb: 2 }}>Vos informations personnelles</Typography>
             <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef", minHeight: "30dvh" }} >
                 <Typography >Paper</Typography>
             </Paper>
+
             <Divider sx={{ mt: 4 }} />
+
             <Typography sx={{ color: "grey", my: 2 }}>Modification du mot de passe</Typography>
             <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef" }} >
                 <Box
@@ -97,15 +146,15 @@ const UserProfile = () => {
                 >
                     <form
                         style={{ width: "100%" }}
-                        onSubmit={handleSubmit(onSubmit)}
+                        onSubmit={updateForm.handleSubmit(onSubmitUpdatePwd)}
                     >
                         <Stack spacing={2}>
                             <TextField
                                 type="password"
                                 label="Ancien mot de passe*"
-                                {...register("oldPassword")}
-                                error={!!errors.oldPassword}
-                                helperText={errors.oldPassword?.message}
+                                {...updateForm.register("oldPassword")}
+                                error={!!updateForm.formState.errors.oldPassword}
+                                helperText={updateForm.formState.errors.oldPassword?.message}
                             />
                             <Box 
                                 sx={{ 
@@ -118,31 +167,33 @@ const UserProfile = () => {
                                 <TextField
                                     type="password"
                                     label="Nouveau mot de passe*"
-                                    {...register("newPassword")}
-                                    error={!!errors.newPassword}
-                                    helperText={errors.newPassword?.message}
+                                    {...updateForm.register("newPassword")}
+                                    error={!!updateForm.formState.errors.newPassword}
+                                    helperText={updateForm.formState.errors.newPassword?.message}
                                 />
                                 <TextField
                                     type="password"
                                     label="Confirmation du nouveau mot de passe*"
-                                    {...register("newPasswordConfirm")}
-                                    error={!!errors.newPasswordConfirm}
-                                    helperText={errors.newPasswordConfirm?.message}
+                                    {...updateForm.register("newPasswordConfirm")}
+                                    error={!!updateForm.formState.errors.newPasswordConfirm}
+                                    helperText={updateForm.formState.errors.newPasswordConfirm?.message}
                                 />
                             </Box>
+
                             <Button
                                 variant="contained"
                                 type="submit"
-                                disabled={isLoading}
+                                disabled={updateFetch.isLoading}
                                 sx={{ maxWidth: "50%" }}
                             >
                                 {
-                                    isLoading ? <CircularProgress /> : "Modifier le mot de passe"
+                                    updateFetch.isLoading ? <CircularProgress /> : "Modifier le mot de passe"
                                 }
                             </Button>
                         </Stack>
                     </form>
-                    <Collapse in={open}>
+
+                    <Collapse in={updateOpen}>
                         <Alert
                             action={
                                 <IconButton
@@ -150,20 +201,100 @@ const UserProfile = () => {
                                     color="inherit"
                                     size="small"
                                     onClick={() => {
-                                        setOpen(false);
+                                        setUpdateOpen(false);
                                     }}
                                 >
                                     <CloseIcon fontSize="inherit" />
                                 </IconButton>
                             }
-                            severity={error ? "error" : "success"} 
+                            severity={updateFetch.error ? "error" : "success"} 
                             sx={{ mt: 3 }}
                         >
-                            {serverMsg}
+                            {updateFetch.serverMsg}
+                        </Alert>
+                    </Collapse>
+
+                </Box>
+            </Paper>
+
+            <Divider sx={{ mt: 4 }} />
+
+            <Typography sx={{ color: "grey", my: 2 }}>Suppression du compte</Typography>
+            <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef" }} >
+            <Typography sx={{ mb: 2 }}>Veuillez renseigner votre mot de passe pour pouvoir supprimer votre compte</Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        '& .MuiTextField-root': { maxWidth: "20rem" },
+                    }}
+                >
+                    <form
+                        style={{ width: "100%" }}
+                        onSubmit={deleteForm.handleSubmit(onSubmitDeleteAcc)}
+                    >
+                        <Stack spacing={2}>
+                            <TextField
+                                type="password"
+                                label="Mot de passe*"
+                                {...deleteForm.register("password")}
+                                error={!!deleteForm.formState.errors.password}
+                                helperText={deleteForm.formState.errors.password?.message}
+                            />
+
+                            <Button
+                                variant="contained"
+                                type="submit"
+                                disabled={deleteFetch.isLoading || deleteFetch.success}
+                                sx={{ maxWidth: "50%" }}
+                            >
+                                {
+                                    deleteFetch.isLoading ? <CircularProgress /> : "Supprimer mon compte"
+                                }
+                            </Button>
+                            <Collapse in={deleteFetch.success} sx={{ maxWidth: "50%" }}>
+                                <Button
+                                    variant="contained"
+                                    disabled={deleteFetch.isLoading}
+                                    sx={{ 
+                                        minWidth: "100%", 
+                                        backgroundColor: "#d32f2f", 
+                                        "&:hover": { backgroundColor: "#b71c1c" }
+                                    }}
+                                    onClick={onConfirmDelete}
+                                >
+                                    {
+                                        deleteFetch.isLoading ? <CircularProgress /> : "Confirmer la suppression"
+                                    }
+                                </Button>
+                            </Collapse>
+                        </Stack>
+                    </form>
+
+                    <Collapse in={deleteOpen}>
+                        <Alert
+                            action={
+                                <IconButton
+                                    aria-label="close"
+                                    color="inherit"
+                                    size="small"
+                                    onClick={() => {
+                                        setDeleteOpen(false);
+                                    }}
+                                >
+                                    <CloseIcon fontSize="inherit" />
+                                </IconButton>
+                            }
+                            severity={deleteFetch.error ? "error" : "success"} 
+                            sx={{ mt: 3 }}
+                        >
+                            {deleteFetch.serverMsg}
                         </Alert>
                     </Collapse>
                 </Box>
             </Paper>
+
         </Container>
     )
 };

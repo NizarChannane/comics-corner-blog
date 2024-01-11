@@ -104,6 +104,7 @@ export const signin = (db, utils, validator) => async (req, res) => {
 
 };
 
+
 export const getAuthStatus = async (req, res) => {
     try {
         res.status(200).send({
@@ -347,6 +348,7 @@ export const resetPwd = (db, utils, validator) => async (req, res) => {
 
 };
 
+
 export const updatePwd = (db, utils, validator) => async (req, res) => {
     try {
         const validationErrors = validator.validationResult(req);
@@ -384,6 +386,44 @@ export const updatePwd = (db, utils, validator) => async (req, res) => {
     };
 };
 
+
 export const deleteAccount = (db, utils, validator) => async (req, res) => {
-    
+    const validationErrors = validator.validationResult(req);
+
+        if(!validationErrors.isEmpty()) {
+            const errors = validationErrors.array();
+            res.status(400).send({ errors });
+            return;
+        };
+
+        const data = validator.matchedData(req);
+
+        const userInfo = (await db.getUserByEmail(req.user.email))[0];
+
+        const pwdMatch = await utils.encryptionTool.comparePwd(data.password, userInfo.mdp);
+
+        if(!pwdMatch) {
+            res.status(400).send({
+                msg: "Le mot de passe soumit n'est pas correct. Veuillez réessayer ou réinitialiser le mot de passe depuis la page de connexion."
+            });
+            return;
+        };
+
+        res.status(200).send({
+            data: {
+                allowDelete: true
+            }
+        });
+};
+
+
+export const confirmDeleteAccount = (db, utils, validator) => async (req, res) => {
+    await db.deleteUser(req.user.userId);
+
+    res.clearCookie("ccAuthCookie").status(200).send({
+        msg: "Votre compte a bien été supprimé",
+        data: {
+            accDeleted: true
+        }
+    });
 };

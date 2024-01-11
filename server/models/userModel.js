@@ -119,7 +119,7 @@ export const deleteUser = async (id) => {
             [id]
         );
 
-        return [rows, fields];
+        return;
     } catch (err) {
         console.log(err);
         throw err;

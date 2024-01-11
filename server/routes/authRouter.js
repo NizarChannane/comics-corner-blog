@@ -60,13 +60,22 @@ router.put(
     validationSchemas.updatePasswordSchema,
     authController.authenticate(db.authenticate, utils, validator, "user"),
     authController.updatePwd(db.updatePwd, utils, validator)
+    );
+
+router.post(
+    "/delete-account",
+    validationSchemas.authenticateSchema,
+    validationSchemas.deleteAccountSchema,
+    authController.authenticate(db.authenticate, utils, validator, "user"),
+    authController.deleteAccount(db.deleteAccount, utils, validator)
 );
 
-// router.delete(
-//     "/delete-account",
-
-//     authController.deleteAccount(db, utils, validator)
-// );
+router.delete(
+    "/confirm-delete-account",
+    validationSchemas.authenticateSchema,
+    authController.authenticate(db.authenticate, utils, validator, "user"),
+    authController.confirmDeleteAccount(db.confirmDeleteAccount, utils, validator)
+);
 
 
 

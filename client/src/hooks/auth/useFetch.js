@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import { useAuthContext } from "./useAuthContext";
 
 export const useFetch = () => {
     const [error, setError] = useState(null);
@@ -7,9 +6,8 @@ export const useFetch = () => {
     const [isLoading, setIsLoading] = useState(null);
     const [serverMsg, setServerMsg] = useState(null);
     const [data, setData] = useState(null);
-    // const { dispatch } = useAuthContext();
 
-    const customFetch = async (method, url, data, actionType, options) => {
+    const customFetch = async (method, url, data, options) => {
         setIsLoading(true);
         setError(null);
         setSuccess(null);
@@ -37,15 +35,6 @@ export const useFetch = () => {
             setIsLoading(false);
             return;
         };
-
-        // if (response.ok) {
-        //     console.log("ok");
-        //     console.log(json);
-        // };
-        // if(actionType && json.data) {
-        //     console.log(actionType);
-        //     dispatch({ type: actionType, payload: { ...json.data } });
-        // };
 
         if(json.data) {
             setData(json.data);

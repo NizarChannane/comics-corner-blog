@@ -31,6 +31,12 @@ const getAuthDb = () => {
         authenticate: {
             getUserById: userModel.getUserById
         },
+        deleteAccount: {
+            getUserByEmail: userModel.getUserByEmail,
+        },
+        confirmDeleteAccount: {
+            deleteUser: userModel.deleteUser
+        },
         tests: {
             createUser: userModel.createUser,
             getUserByEmail: userModel.getUserByEmail,

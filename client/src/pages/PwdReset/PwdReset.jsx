@@ -75,71 +75,68 @@ const PwdReset = () => {
     };
 
     return (
-        <>
-            <div>PwdReset</div>
-            <Container maxWidth="xs" sx={{ my: "auto" }}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}
+        <Container maxWidth="xs" sx={{ my: "auto" }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center'
+                }}
+            >
+                <h1 style={{ textAlign: "center" }}>Réinitialisation du mot de passe</h1>
+                <form
+                    style={{ width: "100%", margin: "2rem 0" }}
+                    onSubmit={handleSubmit(onSubmit)}
                 >
-                    <h1 style={{ textAlign: "center" }}>Réinitialisation du mot de passe</h1>
-                    <form
-                        style={{ width: "100%", margin: "2rem 0" }}
-                        onSubmit={handleSubmit(onSubmit)}
-                    >
-                        <Stack spacing={2}>
-                            <TextField
-                                type="password"
-                                label="Mot de passe*"
-                                {...register("password")}
-                                error={!!errors.password}
-                                helperText={errors.password?.message}
-                            />
-                            <TextField
-                                type="password"
-                                label="Confirmation du mot de passe*"
-                                {...register("passwordConfirm")}
-                                error={!!errors.passwordConfirm}
-                                helperText={errors.passwordConfirm?.message}
-                            />
-                            <Button
-                                variant="contained"
-                                type="submit"
-                                disabled={isLoading}
-                            >
-                                {
-                                    isLoading ? <CircularProgress /> : "Réinitialiser le mot de passe"
-                                }
-                            </Button>
-                        </Stack>
-                    </form>
-
-                    <Collapse in={open}>
-                        <Alert
-                            action={
-                                <IconButton
-                                    aria-label="close"
-                                    color="inherit"
-                                    size="small"
-                                    onClick={() => {
-                                        setOpen(false);
-                                    }}
-                                >
-                                    <CloseIcon fontSize="inherit" />
-                                </IconButton>
-                            }
-                            severity={error ? "error" : "success"}
-                            sx={{ my: 5 }}
+                    <Stack spacing={2}>
+                        <TextField
+                            type="password"
+                            label="Mot de passe*"
+                            {...register("password")}
+                            error={!!errors.password}
+                            helperText={errors.password?.message}
+                        />
+                        <TextField
+                            type="password"
+                            label="Confirmation du mot de passe*"
+                            {...register("passwordConfirm")}
+                            error={!!errors.passwordConfirm}
+                            helperText={errors.passwordConfirm?.message}
+                        />
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            disabled={isLoading}
                         >
-                            {serverMsg}
-                        </Alert>
-                    </Collapse>
-                </Box>
-            </Container>
-        </>
+                            {
+                                isLoading ? <CircularProgress /> : "Réinitialiser le mot de passe"
+                            }
+                        </Button>
+                    </Stack>
+                </form>
+
+                <Collapse in={open}>
+                    <Alert
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setOpen(false);
+                                }}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                        severity={error ? "error" : "success"}
+                        sx={{ my: 5 }}
+                    >
+                        {serverMsg}
+                    </Alert>
+                </Collapse>
+            </Box>
+        </Container>
     )
 };
 

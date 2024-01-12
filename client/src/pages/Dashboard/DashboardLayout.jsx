@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import Box from '@mui/material/Box';
@@ -8,6 +8,7 @@ import Divider from "@mui/material/Divider";
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import { useFetch } from '../../hooks/auth/useFetch';
 import { Link, Outlet } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/auth/useAuthContext';
 
@@ -33,10 +34,24 @@ const dashboardLinks = {
 };
 
 const DashboardLayout = () => {
-    const { user } = useAuthContext();
+    const { user, dispatch } = useAuthContext();
+    const { customFetch, data } = useFetch();
+
+    useEffect(() => {
+        const getUserInfo = async () => {
+            await customFetch("GET", "user/get-profile");
+        };
+
+        getUserInfo();
+    }, []);
+
+    const onClickSignout = async (e) => {
+        await customFetch("GET", "auth/signout");
+        dispatch({ type: "SIGNOUT" });
+    };
 
     return (
-        <Container sx={{ display: "flex", px: { xs: 0 } }}>
+        <Container sx={{ display: "flex", px: { xs: 0 }, flexGrow: 1 }}>
             <Drawer 
                 variant="permanent"
                 sx={{
@@ -65,7 +80,7 @@ const DashboardLayout = () => {
                         }
                         <Divider variant="middle"/>
                         <ListItem  disablePadding>
-                            <ListItemButton>
+                            <ListItemButton onClick={onClickSignout}>
                                 <ListItemText primary={"Se déconnecter"} />
                             </ListItemButton>
                         </ListItem>
@@ -83,7 +98,7 @@ const DashboardLayout = () => {
             >
                 <h1>Tableau de bord</h1>
                 <Divider sx={{ mb: 4 }} />
-                <Outlet />
+                <Outlet context={{ data }} />
             </Box>
         </Container>
     )

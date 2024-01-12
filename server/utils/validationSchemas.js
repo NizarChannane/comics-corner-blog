@@ -69,10 +69,6 @@ export const signinSchema = [
 
 export const authenticateSchema = [
     header("cookie")
-        .trim()
-        .notEmpty()
-            .bail()
-            .withMessage("Aucun cookie d'authentification n'a été trouvé")
         .custom(async (value, { req, location, path }) => {
             req.cookies = req.signedCookies
             await cookie("ccAuthCookie")
@@ -83,7 +79,7 @@ export const authenticateSchema = [
                 .escape()
                 .isJWT()
                     .bail()
-                    .withMessage("Il semblerait que le lien soit incorrect ou corrompu. Veuillez rééssayer.")
+                    .withMessage("Il semblerait que le jeton d'authentification ne soit pas valide.")
                 .run(req);
         })
 ];

@@ -46,4 +46,13 @@ const getAuthDb = () => {
     };
 };
 
-export default { getAuthDb };
+const getUserDb = () => {
+
+    return {
+        getProfile: {
+            getUserByEmail: userModel.getUserByEmail,
+        }
+    };
+};
+
+export default { getAuthDb, getUserDb };

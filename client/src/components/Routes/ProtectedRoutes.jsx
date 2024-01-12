@@ -10,11 +10,7 @@ const ProtectedRoutes = () => {
         return <Navigate to="/signin" />
     }
 
-    console.log(user);
-    console.log(authStatus);
-
     return user ? <Outlet /> : <CircularProgress />
-    // return <Outlet />
 };
 
 export default ProtectedRoutes;

@@ -11,9 +11,9 @@ import Alert from "@mui/material/Alert";
 import Collapse from "@mui/material/Collapse";
 import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
+import Grid from '@mui/material/Grid';
 import CloseIcon from '@mui/icons-material/Close';
-import SuccessMsg from '../../../components/SuccessMsg/SuccessMsg';
-import { Navigate } from 'react-router-dom';
+import { useOutletContext } from "react-router-dom";
 import { useAuthContext } from "../../../hooks/auth/useAuthContext";
 import { useFetch } from '../../../hooks/auth/useFetch';
 import { useForm } from 'react-hook-form';
@@ -81,7 +81,8 @@ const UserProfile = () => {
     const [deleteOpen, setDeleteOpen] = useState(false);
     const updateFetch = useFetch();
     const deleteFetch = useFetch();
-    const { user, dispatch } = useAuthContext();
+    const { dispatch } = useAuthContext();
+    const { data } = useOutletContext();
 
     useEffect(() => {
         if (updateFetch.error || updateFetch.success) {
@@ -128,8 +129,44 @@ const UserProfile = () => {
         <Container>
 
             <Typography sx={{ color: "grey", mb: 2 }}>Vos informations personnelles</Typography>
-            <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef", minHeight: "30dvh" }} >
-                <Typography >Paper</Typography>
+            <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef" }} >
+                <Box sx={{ width: { xs: "100%", sm: "75%" } }}>
+                    {
+                        data ? <Grid container rowSpacing={1} >
+                            <Grid item xs={5}>
+                                <Typography>Nom d'utilisateur :</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>{data.username}</Typography>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Typography>Nom :</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>{data.lastname}</Typography>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Typography>Prénom :</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>{data.firstname}</Typography>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Typography>Email :</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>{data.email}</Typography>
+                            </Grid>
+                            <Grid item xs={5}>
+                                <Typography>Rôle :</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography>{data.role}</Typography>
+                            </Grid>
+                        </Grid> :
+                        <CircularProgress />
+                    }
+                </Box>
             </Paper>
 
             <Divider sx={{ mt: 4 }} />

@@ -28,8 +28,30 @@ const dashboardLinks = {
         }
     ],
     admin: [
-        "Mon profil",
-        ""
+        {
+            path: "profile",
+            text: "Mon profil"
+        },
+        {
+            path: "favorites",
+            text: "Mes articles favoris"
+        },
+        {
+            path: "comments",
+            text: "Mes commentaires"
+        },
+        {
+            path: "users",
+            text: "Utilisateurs"
+        },
+        {
+            path: "all-posts",
+            text: "Articles de blog"
+        },
+        {
+            path: "all-comments",
+            text: "Tous les commentaires"
+        },
     ]
 };
 

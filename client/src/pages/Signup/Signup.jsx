@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Container from '@mui/material/Container';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import Stack from "@mui/material/Stack"
+import Stack from "@mui/material/Stack";
 import Avatar from '@mui/material/Avatar';
 import Alert from "@mui/material/Alert";
 import Collapse from "@mui/material/Collapse";

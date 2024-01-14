@@ -22,7 +22,21 @@ import { useSignout } from '../../hooks/auth/useSignout';
 import "./Navbar.css";
 import Container from '@mui/material/Container';
 
-const navItems = ["Articles", "À propos", "Contact"];
+const navItems = [
+    {
+        path: "posts",
+        text: "Articles"
+    }, 
+    {
+        path: "about",
+        text: "À propos"
+        
+    }, 
+    {
+        path: "contact",
+        text: "Contact"
+    }
+];
 
 const NavBar = (props) => {
     const { window } = props;
@@ -61,12 +75,14 @@ const NavBar = (props) => {
             </Link>
             <Divider />
             <List>
-                {navItems.map((item) => (
-                    <ListItem key={item} disablePadding>
-                        <ListItemButton sx={{ textAlign: 'center' }}>
-                            <ListItemText primary={item} />
-                        </ListItemButton>
-                    </ListItem>
+                {navItems.map((item, index) => (
+                    <Link key={index} style={{textDecoration: "none", color: "black"}} to={item.path} >
+                        <ListItem disablePadding>
+                            <ListItemButton sx={{ textAlign: 'center' }}>
+                                <ListItemText primary={item.text} />
+                            </ListItemButton>
+                        </ListItem>
+                    </Link>
                 ))}
             </List>
             {
@@ -113,10 +129,12 @@ const NavBar = (props) => {
                             <Link style={{textDecoration: "none", color: "white", display: "flex", alignItems: "center"}} to="/">
                                 <img src="/CC_icon.svg" alt="" className="CC-logo" />
                             </Link>
-                            {navItems.map((item) => (
-                                <Button key={item} className="navbar-items">
-                                    {item}
-                                </Button>
+                            {navItems.map((item, index) => (
+                                <Link key={index} style={{textDecoration: "none", color: "black"}} to={item.path} >
+                                    <Button className="navbar-items">
+                                        {item.text}
+                                    </Button>
+                                </Link>
                             ))}
                         </Box>
                         <Box sx={{ ml: "auto", display: "flex", alignItems: "center" }}>

@@ -164,3 +164,32 @@ export const deleteAccountSchema = [
             minSymbols: 1
         }).withMessage("Le mot de passe doit contenir au moins 8 caractères, dont au moins une majuscule, une minuscule, un chiffre et un sumbole")
 ];
+
+export const contactSchema = [
+    body("lastname", "Le champ nom n'est pas valide")
+        .trim()
+        .escape()
+        .isLength({ max: 35 })
+            .withMessage("Le nom doit contenir entre 2 et 35 caractères"),
+    body("firstname", "Le champ prénom n'est pas valide")
+        .trim()
+        .escape()
+        .isLength({ max: 35 })
+            .withMessage("Le prénom doit contenir entre 2 et 35 caractères"),
+    body("email", "Le champ email n'est pas valide")
+        .trim()
+        .notEmpty()
+            .bail()
+            .withMessage("Champ obligatoire, doit contenir une adresse email")
+        .escape()
+        .isEmail()
+            .withMessage("Doit contenir une adresse email valide"),
+    body("message", "Le champ message n'est pas valide")
+        .trim()
+        .notEmpty()
+            .bail()
+            .withMessage("Champ obligatoire, doit contenir un message")
+        .escape()
+        .isLength({ min: 2, max: 200 })
+            .withMessage("Le prénom doit contenir entre 2 et 35 caractères")
+];

@@ -16,6 +16,7 @@ import DashboardLayout from './pages/Dashboard/DashboardLayout';
 import UserProfile from './pages/Dashboard/User/UserProfile';
 import FavoritePosts from './pages/Dashboard/User/FavoritePosts';
 import UserComments from './pages/Dashboard/User/UserComments';
+import Contact from './pages/Contact/Contact';
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Route, Routes } from 'react-router';
@@ -38,6 +39,7 @@ function App() {
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/send-reset-email" element={<SendResetEmail />} />
                 <Route path="/password-reset" element={<PwdReset />} />
+                <Route path="/contact" element={<Contact />} />
                 <Route path="*" element={<NotFound />} />
                 <Route element={<ProtectedRoutes />}>
                     <Route path="/dashboard" element={<DashboardLayout />} >

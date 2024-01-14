@@ -16,7 +16,7 @@ router.get(
     "/get-profile",
     validationSchemas.authenticateSchema,
     authenticate(authDb.authenticate, utils, validator, "user"), 
-    userController.getProfile(db.getProfile)
+    userController.getProfile(db.getProfile, utils)
 );
 
 export default router;

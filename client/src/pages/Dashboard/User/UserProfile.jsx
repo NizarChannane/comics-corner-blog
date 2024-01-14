@@ -258,7 +258,7 @@ const UserProfile = () => {
 
             <Typography sx={{ color: "grey", my: 2 }}>Suppression du compte</Typography>
             <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef" }} >
-            <Typography sx={{ mb: 2 }}>Veuillez renseigner votre mot de passe pour pouvoir supprimer votre compte</Typography>
+            <Typography sx={{ mb: 2 }}>Veuillez renseigner votre mot de passe pour supprimer votre compte</Typography>
                 <Box
                     sx={{
                         display: 'flex',

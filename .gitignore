@@ -2,5 +2,6 @@
 /server/Api_routes.txt
 package-lock.json
 jest.config.json
+.env
 /client/.gitignore
 /client/README.md

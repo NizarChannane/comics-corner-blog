@@ -1,6 +1,4 @@
-import dbIndex from "../models/dbIndex.js";
-
-export const getProfile = (db) => async (req, res) => {
+export const getProfile = (db, utils) => async (req, res) => {
     try {
 
         const userInfo = (await db.getUserByEmail(req.user.email))[0];
@@ -10,7 +8,7 @@ export const getProfile = (db) => async (req, res) => {
                 username: userInfo.username,
                 firstname: userInfo.prenom,
                 lastname: userInfo.nom,
-                email: userInfo.email,
+                email: utils.mailingTool.maskEmail(userInfo.email),
                 role: userInfo.role
             }
         });

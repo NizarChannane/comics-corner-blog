@@ -27,7 +27,7 @@ export const signup = (db, utils, validator) => async (req, res) => {
 
         const token = await utils.tokensTool.createToken({ userId: dbResult.insertId });
 
-        await utils.mailingTool.sendVerificationEmail(token);
+        await utils.mailingTool.sendVerificationEmail(data.email, token);
 
         res.status(200).send({
             userId: dbResult.insertId,

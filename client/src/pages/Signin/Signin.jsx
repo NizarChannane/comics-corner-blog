@@ -69,12 +69,16 @@ const Signin = () => {
         await customFetch("POST", "auth/signin", formData);
     };
 
+    if (user) {
+        return <Navigate to="/dashboard" />
+    }
+
     return (
         <Container maxWidth="xs">
             {
-                user && (
-                    <Navigate to="/dashboard" />
-                )
+                // user && (
+                //     <Navigate to="/dashboard" />
+                // )
             }
             <Box
                 sx={{

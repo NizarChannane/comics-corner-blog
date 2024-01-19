@@ -24,8 +24,8 @@ import Container from '@mui/material/Container';
 
 const navItems = [
     {
-        path: "posts",
-        text: "Articles"
+        path: "blog",
+        text: "Blog"
     }, 
     {
         path: "about",

@@ -5,7 +5,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 
 const RoleBasedRoute = ({ children, role }) => {
     const { user } = useAuthContext();
-    const roleCheck = user.role === role;
+    const roleCheck = role.includes(user.role);
 
     if (!roleCheck) {
         return <Navigate to="/dashboard" />

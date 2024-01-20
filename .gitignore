@@ -5,3 +5,4 @@ jest.config.json
 .env
 /client/.gitignore
 /client/README.md
+*.sql

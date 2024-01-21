@@ -16,7 +16,7 @@ const createApp = () => {
     app.use("/api", router);
     // app.use(router);
     
-    if (process.env.Node_ENV === "production") {
+    if (process.env.NODE_ENV === "production") {
         const __dirname = path.resolve();
         app.use(express.static(path.join(__dirname, "client/dist")));
 

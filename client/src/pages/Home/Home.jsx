@@ -13,7 +13,10 @@ const Home = () => {
     return (
         <>
             <HeroImage />
-            <Container maxWidth="md" sx={{pb: "3rem"}}>
+            <Container maxWidth="md" sx={{ pb: "3rem" }}>
+                <Box>
+                    
+                </Box>
                 <h1>Derniers articles:</h1>
                 <Card sx={{ maxWidth: 400 }}>
                     <CardMedia

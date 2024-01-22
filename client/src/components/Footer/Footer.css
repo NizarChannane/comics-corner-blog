@@ -6,3 +6,7 @@
     /* flex-shrink: 0; */
     /* bottom: 0; */
 }
+
+.footer-logo {
+    width: 150px
+}

@@ -16,7 +16,7 @@ import DashboardLayout from './pages/Dashboard/DashboardLayout';
 import UserProfile from './pages/Dashboard/User/UserProfile';
 import FavoritePosts from './pages/Dashboard/User/FavoritePosts';
 import UserComments from './pages/Dashboard/User/UserComments';
-import Contact from './pages/Contact/Contact';
+import ContactPage from './pages/Contact/ContactPage';
 import BlogHome from './pages/Blog/BlogHome';
 import RecentPosts from './pages/Blog/RecentPosts';
 import Box from "@mui/material/Box";
@@ -44,7 +44,7 @@ function App() {
                 <Route path="/signin" element={<Signin />} />
                 <Route path="/send-reset-email" element={<SendResetEmail />} />
                 <Route path="/password-reset" element={<PwdReset />} />
-                <Route path="/contact" element={<Contact />} />
+                <Route path="/contact" element={<ContactPage />} />
                 <Route path="/blog" element={<BlogHome />} >
                     <Route index element={<RecentPosts />} />
                     <Route path="recent-posts" element={<RecentPosts />} />

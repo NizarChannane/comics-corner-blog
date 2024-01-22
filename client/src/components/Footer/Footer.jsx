@@ -45,11 +45,12 @@ const Footer = () => {
             <Container maxWidth="md">
                 <Box 
                     sx={{ 
-                        display: "flex", 
+                        display: "flex",
+                        flexDirection: { xs: "column", sm: "row" },
                         alignItems: "center",
                         justifyContent: "space-evenly",
-                        flexWrap: "wrap",
-                        gap: 2,
+                        // flexWrap: "wrap",
+                        gap: { xs: 5, sm: 2 },
                         color: "white" 
                     }}
                 >
@@ -61,7 +62,7 @@ const Footer = () => {
                             </Typography>
                         </em>
                     </Box>
-                    <Divider orientation="vertical" flexItem variant="middle" color="white"/>
+                    <Divider orientation="vertical" flexItem variant="middle" color="white" sx={{ display: { xs: "none", sm: "block" } }}/>
                     <Box 
                         sx={{ 
                             display: "flex", 

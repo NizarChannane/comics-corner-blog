@@ -1,26 +1,27 @@
-// import * as React from 'react';
 import { useState } from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import {
+    AppBar,
+    Box,
+    Toolbar,
+    Typography,
+    Button,
+    IconButton,
+    Menu,
+    MenuItem,
+    Divider,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    Drawer,
+    Container
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Divider from "@mui/material/Divider";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Drawer from "@mui/material/Drawer";
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/auth/useAuthContext';
 import { useSignout } from '../../hooks/auth/useSignout';
 import "./Navbar.css";
-import Container from '@mui/material/Container';
 
 const navItems = [
     {

@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import Stack from "@mui/material/Stack";
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
-import IconButton from '@mui/material/IconButton';
-import CircularProgress from "@mui/material/CircularProgress";
+import {
+    Stack,
+    TextField,
+    Button,
+    Alert,
+    Collapse,
+    IconButton,
+    CircularProgress
+} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import { useFetch } from '../../hooks/auth/useFetch';
 import { useForm } from 'react-hook-form';

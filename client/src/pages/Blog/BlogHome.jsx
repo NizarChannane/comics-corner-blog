@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
-import Collapse from '@mui/material/Collapse';
+import {
+    Container,
+    Box,
+    Drawer,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText,
+    Collapse
+} from "@mui/material";
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Link, Outlet, useMatch } from 'react-router-dom';

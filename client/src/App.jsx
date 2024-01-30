@@ -1,7 +1,3 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './App.css'
 import NavBar from "./components/Navbar/Navbar";
 import Home from "./pages/Home/Home";
 import Signup from './pages/Signup/Signup';
@@ -20,16 +16,13 @@ import ContactPage from './pages/Contact/ContactPage';
 import BlogHome from './pages/Blog/BlogHome';
 import RecentPosts from './pages/Blog/RecentPosts';
 import About from './pages/About/About';
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import { Route, Routes } from 'react-router';
 import RoleBasedRoute from './components/Routes/RoleBasedRoute';
 import ProtectedRoutes from './components/Routes/ProtectedRoutes';
-import { useAuthContext } from './hooks/auth/useAuthContext';
 import Post from './pages/Blog/Post';
 import Category from './pages/Blog/Category';
 import { categories, postsThumbnails } from './pages/Blog/Posts/mockData';
-// import { StyledEngineProvider } from '@mui/material/styles';
+import './App.css'
 
 function App() {
 

@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Stack from "@mui/material/Stack";
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
-import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
+import {
+    Box,
+    Container,
+    Stack,
+    Alert,
+    Collapse,
+    CircularProgress,
+    Button,
+    IconButton,
+    TextField
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SuccessMsg from '../../components/SuccessMsg/SuccessMsg';
 import { useAuthContext } from "../../hooks/auth/useAuthContext";
@@ -26,31 +27,6 @@ const schema = yup.object({
         .email("Le format de l'adresse email n'est pas valide")
         .required("Champ obligatoire")
 });
-
-// const SuccessMsg = ({ msg }) => {
-//     return (
-//         <Container maxWidth="sm" sx={{ my: "auto" }}>
-//             <Alert
-//                 // action={
-//                 //     <IconButton
-//                 //         aria-label="close"
-//                 //         color="inherit"
-//                 //         size="small"
-//                 //         onClick={() => {
-//                 //             // openState(false);
-//                 //         }}
-//                 //     >
-//                 //         <CloseIcon fontSize="inherit" />
-//                 //     </IconButton>
-//                 // }
-//                 severity="success"
-//                 sx={{ my: 5, p: 5, justifyContent: "center" }}
-//             >
-//                 {msg}
-//             </Alert>
-//         </Container>
-//     )
-// };
 
 const SendResetEmail = () => {
     const form = useForm({

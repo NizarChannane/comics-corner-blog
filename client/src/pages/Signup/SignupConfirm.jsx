@@ -1,10 +1,12 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Typography from '@mui/material/Typography';
+import { 
+    Container,
+    Box,
+    Card,
+    CardContent,
+    CardActions,
+    Typography
+} from '@mui/material';
 import { Link } from "react-router-dom";
 
 const SignupConfirm = () => {

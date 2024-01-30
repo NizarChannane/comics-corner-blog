@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Avatar from "@mui/material/Avatar";
+import {
+    Container,
+    Box,
+    Typography,
+    Avatar
+} from "@mui/material";
 import { Link } from 'react-router-dom';
 import Markdown from 'markdown-to-jsx';
 

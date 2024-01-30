@@ -1,13 +1,15 @@
 import { useEffect } from 'react';
-import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import List from '@mui/material/List';
-import Divider from "@mui/material/Divider";
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
+import {
+    Drawer,
+    Toolbar,
+    Box,
+    Container,
+    Divider,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemText
+} from "@mui/material";
 import { useFetch } from '../../hooks/auth/useFetch';
 import { Link, Outlet } from 'react-router-dom';
 import { useAuthContext } from '../../hooks/auth/useAuthContext';

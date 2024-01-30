@@ -1,26 +1,40 @@
 # Bienvenue sur ComicsCorner
 
-_1er Janvier 2024 par [Nizar Channane](/about)_
+_20 Janvier 2024 par [Nizar Channane](/about)_
 
-***Ce site web est un site portfolio, c'est une démo visant à démontrer mes compétences de développeur web et est à destination des recruteurs.***  
-Il s'agit d'un blog proposant des articles sur des "*comics*" (bandes-déssinées américaines) et leur adaptations dans d'autres médias.
+***Ce site web est encore au stade de Béta, pour le moment c'est une démo visant à démontrer mes compétences de développeur web et est surtout à destination des recruteurs.***  
+  
+  
+Il s'agit d'un blog proposant des articles sur des "*comics*" (bandes-dessinées) et leur adaptations dans d'autres médias.  
+  
+  
+Vous retrouverez ci-dessous une description du projet et de ses fonctionnalités.
+  
+  
+## **Description du projet**  
+Voici une description du projet tel qu'il sera dans sa version finale :  
 
-Le code source pour cet application est disponible sur [GitHub](/) et sera mis à jour au fur et à mesure de l'avancée du projet.
+En plus de pouvoir consulter des articles de blog, les visiteurs ont également la possibilité de créer un compte utilisateur et accéder à leur tableau de bord. Ce compte utilisateur leur permettra d'ajouter des commentaires aux articles et d'ajouter des articles à leur liste de favoris.  
 
-## **Description du projet**
+De plus, les administrateurs et les utilisateurs ayants le rôle d'"*auteur*" ont accès à la fonctionnalité de création d'articles, permettant ainsi une gestion complète des publications du blog depuis les tableaux de bord des administrateurs et auteurs.
+  
+  
+## **Avancement du projet**  
+La liste suivante présente l'état des principales fonctionnalités du site, ce qui est est disponible et ce qui ne l'est pas encore :  
+  
+  
+- [x] Lecture d'articles
+- [x] Formulaire de contact
+- [x] Inscription
+- [x] Connexion
+- [x] Réinitialisation de mot de passe oublié
+- [x] Accès au tableau de bord
+- [x] Changement de mot de passe
+- [x] Suppression de son propre compte
+- [ ] Ajout de commentaires
+- [ ] Ajout aux favoris
+- [ ] Gestion des articles depuis le tableau de bord  
 
-Le projet consiste en une apprication **Node.js** (utiisant **Express**) connectée à une base de donnée **MySQL**. Ce serveur Node est organisé sous la forme d'une **API REST** consommée par la partie client qui utilise **React**.  
-Il s'agit donc d'une "*stack*" reposant essentiellement sur le **Javascript**, ainsi que le **HTML** et **CSS** pour la partie client et le **SQL** pour la communication avec la base de données.
+## **N'hésitez pas à tester les fonctionnalités disponibles et, si vous le souhaiter, vous pouvez m'adresser un retour d'expérience à travers le formulaire de contact du site.**  
 
-Le serveur est architecturé selon le schéma MVC où les requêtes reçues sont passées à une fonction *controller* qui pourra ensuite utiliser les fonctions exportées par les différents *models* afin d'apporter des modifications à la base de données.
-
-Le client est une application React utilisant des composants fonctionnels. Une UI complètement **responsive** a été mise en place à l'aide de la librairie Material-UI et le routage est assuré par la librairie React-router-dom.  
-De plus, les formulaires du site sont gérés par la librairie React-hook-form et leur validation par la librairie Yup.  
-Concernant les articles de blog, leur contenu est stocké dans des fichiers **Markdown**.
-
-Enfin, le code source est versionné avec Git.
-
-Notez que le site ne présente pas encore l'ensemble des fonctionnalités attendues, veuillez vous référer à la section suivante pour en apprendre plus sur l'avancement du projet.
-
-## **Avancement du projet**
-
+## **Je vous remercie pour votre lecture!**

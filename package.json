@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "type": "module",
-  "main": "server.js",
+  "main": "server/server.js",
   "scripts": {
-    "start": "",
+    "dev-concurrently": "concurrently \"npm start\" \"npm run dev --prefix client\"",
+    "start": "nodemon server/server.js",
     "unit-test": "jest --testMatch **/tests/spec/**/*.js --resetMocks",
     "tdd-unit-test": "jest --testMatch **/tests/spec/**/*.js --resetMocks --watchAll",
     "integration-test": "jest --testMatch **/tests/integration/**/*.js --resetMocks",
@@ -16,15 +17,20 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.6.1"
+    "mysql2": "^3.6.1",
+    "nodemailer": "^6.9.8"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.20",
+    "concurrently": "^8.2.2",
     "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
     "supertest": "^6.3.3"
   }
 }

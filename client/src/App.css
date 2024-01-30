@@ -1,0 +1,13 @@
+html {
+  width: 100%;
+}
+
+.main-app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.MuiButton-root {
+  text-transform: none;
+}

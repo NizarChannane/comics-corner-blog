@@ -2,3 +2,8 @@
 /server/Api_routes.txt
 package-lock.json
 jest.config.json
+.env
+/client/.gitignore
+/client/README.md
+/client/src/pages/Blog/Posts/Backup-présentation.md
+*.sql

@@ -42,7 +42,7 @@ const Home = () => {
                     </Typography>
                     <Avatar src="/Profile_picture.jfif" sx={{ width: "200px", height: "200px" }} />
                     <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        Bonjour, je m'appelle Nizar Channane et je suis développeur web full-stack. Ce site me sert de portfolio, il a été codé principalement en Javascript et est complètement responsive. Si vous souhaitez en apprendre plus sur mon profil, n'hésitez pas à visiter la section <em>"À propos"</em>.
+                        Bonjour, je m'appelle Nizar Channane et je suis développeur web full-stack. Ce site me sert de portfolio, il a été codé principalement en Javascript et est complètement responsive. Si vous souhaitez en apprendre plus sur mon profil, n'hésitez pas à visiter la page <em>"À propos"</em>.
                     </Typography>
                     <Link to="/about" style={{ textDecoration: "none", color: "black" }}>{"À propos >"}</Link>
                 </Box>

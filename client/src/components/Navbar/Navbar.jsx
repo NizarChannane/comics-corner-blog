@@ -203,12 +203,12 @@ const NavBar = (props) => {
             </AppBar>
             <nav>
                 <Drawer
-                    // container={container}
+                    container={container}
                     variant="temporary"
                     open={mobileOpen}
                     onClose={handleDrawerToggle}
                     ModalProps={{
-                        keepMounted: true, // Better open performance on mobile.
+                        keepMounted: true,
                     }}
                     sx={{
                         display: { xs: 'block', sm: 'none' },

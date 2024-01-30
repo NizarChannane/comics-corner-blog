@@ -1,9 +1,10 @@
 import React from 'react';
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Avatar from '@mui/material/Avatar';
-import Paper from '@mui/material/Paper';
-import Typography from "@mui/material/Typography";
+import {
+    Box,
+    Container,
+    Paper,
+    Typography
+} from "@mui/material";
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import { Link } from 'react-router-dom';
 import "./About.css";

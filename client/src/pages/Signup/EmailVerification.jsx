@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Typography from '@mui/material/Typography';
-import CircularProgress from '@mui/material/CircularProgress';
+import {
+    Container,
+    Box,
+    Card,
+    CardContent,
+    CardActions,
+    Typography,
+    CircularProgress
+} from '@mui/material';
 import { Link, Navigate } from "react-router-dom";
 import { useSearchParams } from 'react-router-dom';
 import { useFetch } from '../../hooks/auth/useFetch';

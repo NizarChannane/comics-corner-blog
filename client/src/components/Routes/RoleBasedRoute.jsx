@@ -1,7 +1,7 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router';
+import { Navigate } from 'react-router';
 import { useAuthContext } from '../../hooks/auth/useAuthContext';
-import CircularProgress from '@mui/material/CircularProgress';
+import { CircularProgress } from '@mui/material';
 
 const RoleBasedRoute = ({ children, role }) => {
     const { user } = useAuthContext();

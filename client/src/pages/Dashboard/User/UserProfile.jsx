@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Divider from "@mui/material/Divider";
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Stack from "@mui/material/Stack";
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
-import IconButton from '@mui/material/IconButton';
-import CircularProgress from '@mui/material/CircularProgress';
-import Grid from '@mui/material/Grid';
+import {
+    Box,
+    Container,
+    Divider,
+    Paper,
+    Typography,
+    TextField,
+    Button,
+    Stack,
+    Alert,
+    Collapse,
+    IconButton,
+    CircularProgress,
+    Grid
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useOutletContext } from "react-router-dom";
 import { useAuthContext } from "../../../hooks/auth/useAuthContext";

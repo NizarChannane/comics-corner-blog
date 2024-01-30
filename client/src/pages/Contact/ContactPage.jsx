@@ -1,9 +1,11 @@
 import React from 'react';
-import Container from '@mui/material/Container';
-import Box from "@mui/material/Box";
-import ContactForm from './ContactForm';
-import Avatar from '@mui/material/Avatar';
+import {
+    Container,
+    Box,
+    Avatar
+} from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
+import ContactForm from './ContactForm';
 
 const ContactPage = () => {
     return (

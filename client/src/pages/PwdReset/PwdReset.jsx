@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Stack from "@mui/material/Stack";
-import CircularProgress from '@mui/material/CircularProgress';
-import Alert from "@mui/material/Alert";
-import Collapse from "@mui/material/Collapse";
-import IconButton from '@mui/material/IconButton';
+import {
+    Container,
+    Box,
+    TextField,
+    Button,
+    Stack,
+    CircularProgress,
+    Alert,
+    Collapse,
+    IconButton
+} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import SuccessMsg from '../../components/SuccessMsg/SuccessMsg';
 import { useSearchParams } from 'react-router-dom';

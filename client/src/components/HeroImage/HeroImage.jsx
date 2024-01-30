@@ -1,7 +1,5 @@
 import React from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-// import "./HeroImage.css";
+import { Box } from '@mui/material';
 import "./HeroImage.css";
 
 const HeroImage = () => {

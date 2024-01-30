@@ -19,6 +19,7 @@ import UserComments from './pages/Dashboard/User/UserComments';
 import ContactPage from './pages/Contact/ContactPage';
 import BlogHome from './pages/Blog/BlogHome';
 import RecentPosts from './pages/Blog/RecentPosts';
+import About from './pages/About/About';
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
 import { Route, Routes } from 'react-router';
@@ -45,6 +46,7 @@ function App() {
                 <Route path="/send-reset-email" element={<SendResetEmail />} />
                 <Route path="/password-reset" element={<PwdReset />} />
                 <Route path="/contact" element={<ContactPage />} />
+                <Route path="/about" element={<About />} />
                 <Route path="/blog" element={<BlogHome />} >
                     <Route index element={<RecentPosts />} />
                     <Route path="recent-posts" element={<RecentPosts />} />

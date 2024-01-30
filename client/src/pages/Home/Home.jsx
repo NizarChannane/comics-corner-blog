@@ -25,7 +25,7 @@ const Home = () => {
                         Bienvenue sur<br/>Comics Corner
                     </Typography>
                     <Typography variant="h5" sx={{ textAlign: "center" }}>
-                        Ce site est une démo servant de portfolio pour un développeur web et est destiné aux recruteurs. Dans la section blog vous trouverez un article présentant ce projet plus en détails. De plus, sur la page <em>"À propos"</em> vous trouverez une présentation du développeur qui a créé ce site. 
+                        Ce blog est encore à l'état de <b>Béta</b> et cette version est une démo. Dans la section blog vous trouverez un article présentant ce projet plus en détails ainsi que les fonctionnalités déjà disponibles. De plus, sur la page <em>"À propos"</em> vous trouverez une présentation du créateur du site. 
                     </Typography>
                 </Box>
                 <Divider variant="middle" color="black" sx={{ width: "50vw", mx: "auto", mb: "3rem" }} />
@@ -40,9 +40,9 @@ const Home = () => {
                     <Typography variant="h5" sx={{ textAlign: "center" }}>
                         À propos :
                     </Typography>
-                    <Avatar src="/Profile_picture.jfif" sx={{ width: "200px", height: "200px" }} />
+                    {/* <Avatar src="/Profile_picture.jfif" sx={{ width: "200px", height: "200px" }} /> */}
                     <Typography variant="h6" sx={{ textAlign: "center" }}>
-                        Bonjour, je m'appelle Nizar Channane et je suis développeur web full-stack. Ce site me sert de portfolio, il a été codé principalement en Javascript et est complètement responsive. Si vous souhaitez en apprendre plus sur mon profil, n'hésitez pas à visiter la page <em>"À propos"</em>.
+                        Bonjour, je m'appelle Nizar Channane et je suis développeur web et un grand passionné de comics (bandes dessinés). J'ai créé ce site afin de partager ma passion des comics, vous pourrez donc retrouver des analyses de bandes dessinés ainsi que leurs adaptations dans d'autres médias. Si vous souhaitez en apprendre plus sur les origines du projet, n'hésitez pas à visiter la page <em>"À propos"</em>.
                     </Typography>
                     <Link to="/about" style={{ textDecoration: "none", color: "black" }}>{"À propos >"}</Link>
                 </Box>

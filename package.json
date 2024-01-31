@@ -6,6 +6,7 @@
   "main": "server/server.js",
   "scripts": {
     "dev-concurrently": "concurrently \"npm start\" \"npm run dev --prefix client\"",
+    "start-prod": "node server/server.js",
     "start": "nodemon server/server.js",
     "unit-test": "jest --testMatch **/tests/spec/**/*.js --resetMocks",
     "tdd-unit-test": "jest --testMatch **/tests/spec/**/*.js --resetMocks --watchAll",

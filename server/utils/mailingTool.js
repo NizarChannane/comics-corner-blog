@@ -34,7 +34,7 @@ export const sendVerificationEmail = async (email, token) => {
                         <div class="container">
                             <h1>Bienvenue sur Comics Corner</h1>
                             <p>Afin de valider votre inscription, veuillez cliquer sur le lien ci-desous: </p>
-                            <a href="http://localhost:5173/email-verification?token=${token}">Valider mon compte</a>
+                            <a href="http://www.comicscorner.nizar-channane.com/email-verification?token=${token}">Valider mon compte</a>
                         </div>
                         
                     </body>
@@ -79,7 +79,7 @@ export const sendResetEmail = async (email, token) => {
                         <div class="container">
                             <h1>Réinitialisation de mot de passe</h1>
                             <p>Afin de réinitialiser votre mot de passe, veuillez cliquer sur le lien ci-desous: </p>
-                            <a href="http://localhost:5173/password-reset?token=${token}">Réinitialisation le mot de passe</a>
+                            <a href="http://www.comicscorner.nizar-channane.com/password-reset?token=${token}">Réinitialisation le mot de passe</a>
                         </div>
                         
                     </body>

@@ -104,7 +104,7 @@ const Footer = () => {
                                 <GitHubIcon sx={{ color: "white" }} />
                             </IconButton>
                         </Link>
-                        <Link to="https://linkedin.com/in/nizar-channane" target="_blank" rel="noopener noreferrer">
+                        <Link to="https://linkedin.com/in/nizar-channane-51abb2131" target="_blank" rel="noopener noreferrer">
                             <IconButton aria-label="lien LinkedIn">
                                 <LinkedInIcon sx={{ color: "white" }} />
                             </IconButton>

@@ -32,8 +32,6 @@ export const signup = (db, utils, validator) => async (req, res) => {
         res.status(200).send({
             userId: dbResult.insertId,
             msg: "Votre compte a bien été créé. Veuillez cliquer sur le lien se trouvant dans le mail de vérification qui vous a été envoyé.",
-            //  NOT FOR PRODUCTION
-            // token: token
         });
         return;
 

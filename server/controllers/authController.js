@@ -276,6 +276,13 @@ export const sendResetEmail = (db, utils, validator) => async (req, res) => {
             return;
         };
 
+        if(userInfo.username === "DemoUser") {
+            res.status(401).send({
+                msg: "Ce compte n'a pas accès à cette ressource."
+            });
+            return;
+        };
+
         const resetToken = await utils.tokensTool.createToken({ userId: userInfo.userId });
 
         await utils.mailingTool.sendResetEmail(userInfo.email, resetToken);
@@ -361,6 +368,13 @@ export const updatePwd = (db, utils, validator) => async (req, res) => {
 
         const userInfo = (await db.getUserByEmail(req.user.email))[0];
 
+        if(userInfo.username === "DemoUser") {
+            res.status(401).send({
+                msg: "Ce compte n'a pas accès à cette ressource."
+            });
+            return;
+        };
+
         const pwdMatch = await utils.encryptionTool.comparePwd(data.oldPassword, userInfo.mdp);
 
         if(!pwdMatch) {
@@ -397,6 +411,13 @@ export const deleteAccount = (db, utils, validator) => async (req, res) => {
         const data = validator.matchedData(req);
 
         const userInfo = (await db.getUserByEmail(req.user.email))[0];
+
+        if(userInfo.username === "DemoUser") {
+            res.status(401).send({
+                msg: "Ce compte n'a pas accès à cette ressource."
+            });
+            return;
+        };
 
         const pwdMatch = await utils.encryptionTool.comparePwd(data.password, userInfo.mdp);
 

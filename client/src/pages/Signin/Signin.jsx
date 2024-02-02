@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
     Box,
     Container,
     TextField,
@@ -9,9 +12,11 @@ import {
     Alert,
     Collapse,
     IconButton,
-    CircularProgress
+    CircularProgress,
+    Typography
 } from "@mui/material";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CloseIcon from '@mui/icons-material/Close';
 import { useAuthContext } from '../../hooks/auth/useAuthContext';
 import { useFetch } from '../../hooks/auth/useFetch';
@@ -76,11 +81,6 @@ const Signin = () => {
 
     return (
         <Container maxWidth="xs">
-            {
-                // user && (
-                //     <Navigate to="/dashboard" />
-                // )
-            }
             <Box
                 sx={{
                     display: 'flex',
@@ -144,12 +144,36 @@ const Signin = () => {
                                 </IconButton>
                             }
                             severity="error" 
-                            sx={{ my: 5 }}
+                            sx={{ mt: "1rem" }}
                         >
                             {serverMsg}
                         </Alert>
                     </Collapse>
                 }
+
+                <Box sx={{ my: "1rem" }}>
+                    <Accordion sx={{ textAlign: "center", backgroundColor: "#efefef" }}>
+                        <AccordionSummary
+                            expandIcon={<ArrowDropDownIcon />}
+                            aria-controls="panel1-content"
+                            id="panel1-header"
+                        >
+                            Instructions pour utiliser la démo
+                        </AccordionSummary>
+                        <AccordionDetails>
+                            <Typography sx={{ mb: "1rem" }}>
+                                Pour utiliser le compte de la démo, veuillez renseigner les informations suivantes :
+                            </Typography>
+                            <Typography>
+                                Adresse mail: fake@email.com
+                            </Typography>
+                            <Typography>
+                                Mot de passe: Demo123#
+                            </Typography>
+                        </AccordionDetails>
+                    </Accordion>
+                </Box>
+
             </Box>
 
         </Container>

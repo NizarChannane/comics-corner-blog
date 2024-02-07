@@ -81,6 +81,7 @@ const UserProfile = () => {
 
     const [updateOpen, setUpdateOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
+    const [demoUser, setDemoUser] = useState(false);
     const updateFetch = useFetch();
     const deleteFetch = useFetch();
     const { dispatch } = useAuthContext();
@@ -109,6 +110,12 @@ const UserProfile = () => {
             dispatch({ type: "SIGNOUT" });
         };
     }, [deleteFetch.data])
+
+    useEffect(() => {
+        if (data && data.username === "DemoUser") {
+            setDemoUser(true);
+        };
+    }, [data])
 
     const onSubmitUpdatePwd = async (data, e) => {
         e.preventDefault();
@@ -183,12 +190,19 @@ const UserProfile = () => {
                         '& .MuiTextField-root': { maxWidth: "20rem" },
                     }}
                 >
+                    {
+                        demoUser && 
+                        <Typography sx={{ mb: "1rem" }}>
+                            <em>Cette fonctionnalité n'est pas disponible pour l'utilisateur de démo</em>
+                        </Typography>
+                    }
                     <form
                         style={{ width: "100%" }}
                         onSubmit={updateForm.handleSubmit(onSubmitUpdatePwd)}
                     >
                         <Stack spacing={2}>
                             <TextField
+                                disabled={demoUser}
                                 type="password"
                                 label="Ancien mot de passe*"
                                 {...updateForm.register("oldPassword")}
@@ -204,6 +218,7 @@ const UserProfile = () => {
                                 }}
                             >
                                 <TextField
+                                    disabled={demoUser}
                                     type="password"
                                     label="Nouveau mot de passe*"
                                     {...updateForm.register("newPassword")}
@@ -211,6 +226,7 @@ const UserProfile = () => {
                                     helperText={updateForm.formState.errors.newPassword?.message}
                                 />
                                 <TextField
+                                    disabled={demoUser}
                                     type="password"
                                     label="Confirmation du nouveau mot de passe*"
                                     {...updateForm.register("newPasswordConfirm")}
@@ -222,7 +238,7 @@ const UserProfile = () => {
                             <Button
                                 variant="contained"
                                 type="submit"
-                                disabled={updateFetch.isLoading}
+                                disabled={updateFetch.isLoading || demoUser}
                                 sx={{ maxWidth: "50%" }}
                             >
                                 {
@@ -260,6 +276,12 @@ const UserProfile = () => {
 
             <Typography sx={{ color: "grey", my: 2 }}>Suppression du compte</Typography>
             <Paper elevation={3} sx={{ p: 3, backgroundColor: "#efefef" }} >
+            {
+                demoUser && 
+                <Typography sx={{ mb: "1rem", textAlign: "center" }}>
+                    <em>Cette fonctionnalité n'est pas disponible pour l'utilisateur de démo</em>
+                </Typography>
+            }
             <Typography sx={{ mb: 2 }}>Veuillez renseigner votre mot de passe pour supprimer votre compte</Typography>
                 <Box
                     sx={{
@@ -275,6 +297,7 @@ const UserProfile = () => {
                     >
                         <Stack spacing={2}>
                             <TextField
+                                disabled={demoUser}
                                 type="password"
                                 label="Mot de passe*"
                                 {...deleteForm.register("password")}
@@ -285,7 +308,7 @@ const UserProfile = () => {
                             <Button
                                 variant="contained"
                                 type="submit"
-                                disabled={deleteFetch.isLoading || deleteFetch.success}
+                                disabled={deleteFetch.isLoading || deleteFetch.success || demoUser}
                                 sx={{ maxWidth: "50%" }}
                             >
                                 {

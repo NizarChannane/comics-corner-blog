@@ -1,5 +1,5 @@
 import * as authController from "../../../../controllers/authController.js";
-import { jest, expect } from "@jest/globals";
+import { jest, expect, beforeAll } from "@jest/globals";
 
 const mockReq = {
     body: {
@@ -47,7 +47,7 @@ const validatorResultObj = {
 };
 
 const mockValidator = {
-    validationResult: jest.fn(),
+    validationResult: jest.fn().mockReturnValue(),
     matchedData: jest.fn()
 };
 
@@ -64,6 +64,10 @@ describe("authenticate", () => {
     };
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEyMywiaWF0IjoxNTE2MjM5MDIyfQ.VvlnVPAZ7j6e50xKQ9fEEMwpcFOYXYeZj-MWHj661jU";
 
+    // beforeAll(() => {
+    //     mockValidator.validationResult.mockReturnValue({ isEmpty: jest.fn() })
+    // });
+
     beforeEach(() => {
         mockRes.status.mockReturnThis();
         mockReq.get.mockReturnValue(`Bearer ${token}`);
@@ -74,14 +78,19 @@ describe("authenticate", () => {
     //  gets token from auth header
     describe("get token from auth header", () => {
 
-        //  sets response status to 401 if header is missing
-        test("sets response status to 401 if header is missing", async () => {
-            mockReq.get.mockReturnValue("");
+        //  sets response status to 401 if token is missing
+        test("sets response status to 401 if token is missing", async () => {
+            // mockReq.get.mockReturnValue("");
+            const mockErrors = "some error";
+            mockValidator.validationResult.mockReturnValue({ 
+                isEmpty: jest.fn(() => false),
+                array: jest.fn().mockReturnValue(mockErrors)
+            });
 
             await authController.authenticate(mockDb, mockUtils, mockValidator, mockRole)(mockReq, mockRes, mockNext);
 
-            expect(mockReq.get).toHaveBeenCalledTimes(1);
-            expect(mockReq.get.mock.calls[0][0]).toBe("Authorization");
+            // expect(mockReq.get).toHaveBeenCalledTimes(1);
+            // expect(mockReq.get.mock.calls[0][0]).toBe("Authorization");
             expect(mockRes.status).toHaveBeenCalledTimes(1);
             expect(mockRes.status.mock.calls[0][0]).toBe(401);
         });

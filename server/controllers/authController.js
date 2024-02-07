@@ -189,6 +189,8 @@ export const verifyEmail = (db, utils, validator) => async (req, res) => {
 export const authenticate = (db, utils, validator, role) => async (req, res, next) => {
     try {
         const validationErrors = validator.validationResult(req);
+        console.log(validationErrors);
+        console.log(validator.validationResult());
 
         if(!validationErrors.isEmpty()) {
             const errors = validationErrors.array();
@@ -197,6 +199,7 @@ export const authenticate = (db, utils, validator, role) => async (req, res, nex
         };
 
         const token = (validator.matchedData(req)).ccAuthCookie;
+        console.log(validator.matchedData(req));
 
         if(!token) {
             res.status(401).send({
@@ -272,6 +275,13 @@ export const sendResetEmail = (db, utils, validator) => async (req, res) => {
         if(!userInfo) {
             res.status(400).send({
                 msg: "Aucun compte n'est associé à cette adresse mail. Veuillez vous inscire."
+            });
+            return;
+        };
+
+        if(userInfo.username === "DemoUser") {
+            res.status(401).send({
+                msg: "Ce compte n'a pas accès à cette ressource."
             });
             return;
         };
@@ -361,6 +371,13 @@ export const updatePwd = (db, utils, validator) => async (req, res) => {
 
         const userInfo = (await db.getUserByEmail(req.user.email))[0];
 
+        if(userInfo.username === "DemoUser") {
+            res.status(401).send({
+                msg: "Ce compte n'a pas accès à cette ressource."
+            });
+            return;
+        };
+
         const pwdMatch = await utils.encryptionTool.comparePwd(data.oldPassword, userInfo.mdp);
 
         if(!pwdMatch) {
@@ -397,6 +414,13 @@ export const deleteAccount = (db, utils, validator) => async (req, res) => {
         const data = validator.matchedData(req);
 
         const userInfo = (await db.getUserByEmail(req.user.email))[0];
+
+        if(userInfo.username === "DemoUser") {
+            res.status(401).send({
+                msg: "Ce compte n'a pas accès à cette ressource."
+            });
+            return;
+        };
 
         const pwdMatch = await utils.encryptionTool.comparePwd(data.password, userInfo.mdp);
 

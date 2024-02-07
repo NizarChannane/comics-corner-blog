@@ -189,6 +189,8 @@ export const verifyEmail = (db, utils, validator) => async (req, res) => {
 export const authenticate = (db, utils, validator, role) => async (req, res, next) => {
     try {
         const validationErrors = validator.validationResult(req);
+        console.log(validationErrors);
+        console.log(validator.validationResult());
 
         if(!validationErrors.isEmpty()) {
             const errors = validationErrors.array();
@@ -197,6 +199,7 @@ export const authenticate = (db, utils, validator, role) => async (req, res, nex
         };
 
         const token = (validator.matchedData(req)).ccAuthCookie;
+        console.log(validator.matchedData(req));
 
         if(!token) {
             res.status(401).send({
